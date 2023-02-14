@@ -1,0 +1,956 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+
+<link rel="stylesheet" href="../assets/assets/plugins/bootstrap/css/bootstrap.min.css" loading="lazy">
+
+<!-- Plugins css -->
+<link rel="stylesheet" href="../assets/assets/plugins/charts-c3/c3.min.css" loading="lazy">
+<base href="/">
+<!-- Core css -->
+<link rel="stylesheet" href="../assets/assets/css/main.css" loading="lazy">
+<link rel="stylesheet" href="../assets/assets/css/theme1.css" loading="lazy">
+
+<link rel="stylesheet" href="../styles.css" loading="lazy">
+<!-- Plugins css -->
+<link rel="stylesheet" href="../assets/assets/plugins/datatable/dataTables.bootstrap4.min.css">
+<link rel="stylesheet" href="../assets/assets/plugins/datatable/fixedeader/dataTables.fixedcolumns.bootstrap4.min.css">
+<link rel="stylesheet" href="../assets/assets/plugins/datatable/fixedeader/dataTables.fixedheader.bootstrap4.min.css">
+<link rel="stylesheet" href="../assets/assets/css/sweetalert.css">
+<link rel="stylesheet" href="https://kendo.cdn.telerik.com/2022.3.1109/styles/kendo.default-ocean-blue.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.min.css">
+<link href="../assets/assets/js/form/date_picker.css" rel="stylesheet">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.10/select2-bootstrap.min.css" integrity="sha512-kq3FES+RuuGoBW3a9R2ELYKRywUEQv0wvPTItv3DSGqjpbNtGWVdvT8qwdKkqvPzT93jp8tSF4+oN4IeTEIlQA==" crossorigin="anonymous" referrerpolicy="no-referrer">
+<!-- Bootstrap Core and vandor -->
+<!-- Bootstrap Core and vandor -->
+<style>
+
+.form-group-sm .select2-container--bootstrap .select2-selection--multiple .select2-search--inline .select2-search__field, .input-group-sm .select2-container--bootstrap .select2-selection--multiple .select2-search--inline .select2-search__field, .select2-container--bootstrap .select2-selection--multiple.input-sm .select2-search--inline .select2-search__field {
+    
+    height: 36px!important;
+    
+}
+
+.swal2-title
+{
+  font-size:22px!important;
+}
+
+/*!Don't remove this!
+ * jQuery MDTimePicker v1.0 plugin
+ * 
+ * Author: Dionlee Uy
+ * Email: dionleeuy@gmail.com
+ *
+ * Date: Tuesday, August 28 2017
+ */
+ @import url(https://fonts.googleapis.com/css?family=Roboto);
+.mdtp__wrapper,
+body[mdtimepicker-display="on"] {
+  overflow: hidden;
+}
+.mdtimepicker {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  font-family: Roboto, sans-serif;
+  font-size: 14px;
+  background-color: rgba(10, 10, 10, 0.7);
+  transition: background-color 0.28s ease;
+  z-index: 100001;
+}
+.mdtimepicker.hidden {
+  display: none;
+}
+.mdtimepicker.animate {
+  background-color: transparent;
+}
+.mdtp__wrapper {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  left: 50%;
+  bottom: 210px;
+  min-width: 280px;
+  opacity: 1;
+  user-select: none;
+  border-radius: 2px;
+  transform: translateX(-50%) scale(1);
+  box-shadow: 0 11px 15px -7px rgba(0, 0, 0, 0.2),
+    0 24px 38px 3px rgba(0, 0, 0, 0.14), 0 9px 46px 8px rgba(0, 0, 0, 0.12);
+  transition: transform 0.28s ease, opacity 0.28s ease;
+}
+.mdtp__wrapper.animate {
+  transform: translateX(-50%) scale(1.05);
+  opacity: 0;
+}
+.mdtp__time_holder {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  font-size: 46px;
+  padding: 20px 24px;
+  color: rgba(255, 255, 255, 0.5);
+  text-align: center;
+  background-color: #1565c0;
+}
+.mdtp__time_holder > span {
+  display: inline-block;
+  line-height: 48px;
+  cursor: default;
+}
+.mdtp__time_holder > span:not(.mdtp__timedots):not(.mdtp__ampm) {
+  cursor: pointer;
+  margin: 0 4px;
+}
+.mdtp__time_holder .mdtp__time_h.active,
+.mdtp__time_holder .mdtp__time_m.active {
+  color: #fafafa;
+}
+.mdtp__time_holder .mdtp__ampm {
+  font-size: 18px;
+}
+.mdtp__clock_holder {
+  position: relative;
+  padding: 20px;
+  background-color: #fff;
+}
+.mdtp__clock_holder .mdtp__clock {
+  position: relative;
+  width: 250px;
+  height: 250px;
+  margin-bottom: 20px;
+  border-radius: 50%;
+  background-color: #eee;
+}
+.mdtp__clock .mdtp__am,
+.mdtp__clock .mdtp__pm {
+  display: block;
+  position: absolute;
+  bottom: -8px;
+  width: 36px;
+  height: 36px;
+  line-height: 36px;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0.05);
+  transition: background-color 0.2s ease, color 0.2s;
+  z-index: 3;
+}
+.mdtp__clock .mdtp__am {
+  left: -8px;
+}
+.mdtp__clock .mdtp__pm {
+  right: -8px;
+}
+.mdtp__clock .mdtp__am:hover,
+.mdtp__clock .mdtp__pm:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+.mdtp__clock .mdtp__am.active,
+.mdtp__clock .mdtp__pm.active {
+  color: #fafafa;
+  background-color: #1565c0;
+}
+.mdtp__clock .mdtp__clock_dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 4px;
+  background-color: #1565c0;
+  border-radius: 50%;
+}
+.mdtp__clock .mdtp__hour_holder,
+.mdtp__clock .mdtp__minute_holder {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 1;
+  transform: scale(1);
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.35s ease;
+  overflow: hidden;
+}
+.mdtp__clock .mdtp__hour_holder.animate {
+  transform: scale(1.2);
+  opacity: 0;
+}
+.mdtp__clock .mdtp__minute_holder.animate {
+  transform: scale(0.8);
+  opacity: 0;
+}
+.mdtp__clock .mdtp__hour_holder.hidden,
+.mdtp__clock .mdtp__minute_holder.hidden {
+  display: none;
+}
+.mdtp__clock .mdtp__digit {
+  position: absolute;
+  width: 50%;
+  top: 50%;
+  left: 0;
+  margin-top: -16px;
+  transform-origin: right center;
+  z-index: 1;
+}
+.mdtp__clock .mdtp__digit span {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  line-height: 32px;
+  margin-left: 8px;
+  text-align: center;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.28s, color 0.14s;
+}
+.mdtp__clock .mdtp__digit span:hover,
+.mdtp__digit.active span {
+  background-color: #1565c0 !important;
+  color: #fff;
+  z-index: 2;
+}
+.mdtp__button,
+.mdtp__wrapper[data-theme="blue"] .mdtp__button {
+  color: #1565c0;
+}
+.mdtp__digit.active:before {
+  content: "";
+  display: block;
+  position: absolute;
+  top: calc(50% - 1px);
+  right: 0;
+  height: 2px;
+  width: calc(100% - 40px);
+  background-color: #1565c0;
+}
+.mdtp__clock .mdtp__minute_holder .mdtp__digit {
+  font-size: 13px;
+}
+.mdtp__clock .mdtp__minute_holder .mdtp__digit:not(.marker) {
+  margin-top: -6px;
+  height: 12px;
+}
+.mdtp__clock .mdtp__minute_holder .mdtp__digit:not(.marker).active:before {
+  width: calc(100% - 26px);
+}
+.mdtp__clock .mdtp__minute_holder .mdtp__digit:not(.marker) span {
+  width: 12px;
+  height: 12px;
+  line-height: 12px;
+  margin-left: 14px;
+}
+.mdtp__clock .mdtp__minute_holder .mdtp__digit.marker {
+  margin-top: -12px;
+}
+.mdtp__clock .mdtp__minute_holder .mdtp__digit.marker.active:before {
+  width: calc(100% - 34px);
+}
+.mdtp__clock .mdtp__minute_holder .mdtp__digit.marker span {
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  margin-left: 10px;
+}
+.mdtp__digit.rotate-6 {
+  transform: rotate(6deg);
+}
+.mdtp__digit.rotate-6 span {
+  transform: rotate(-6deg);
+}
+.mdtp__digit.rotate-12 {
+  transform: rotate(12deg);
+}
+.mdtp__digit.rotate-12 span {
+  transform: rotate(-12deg);
+}
+.mdtp__digit.rotate-18 {
+  transform: rotate(18deg);
+}
+.mdtp__digit.rotate-18 span {
+  transform: rotate(-18deg);
+}
+.mdtp__digit.rotate-24 {
+  transform: rotate(24deg);
+}
+.mdtp__digit.rotate-24 span {
+  transform: rotate(-24deg);
+}
+.mdtp__digit.rotate-30 {
+  transform: rotate(30deg);
+}
+.mdtp__digit.rotate-30 span {
+  transform: rotate(-30deg);
+}
+.mdtp__digit.rotate-36 {
+  transform: rotate(36deg);
+}
+.mdtp__digit.rotate-36 span {
+  transform: rotate(-36deg);
+}
+.mdtp__digit.rotate-42 {
+  transform: rotate(42deg);
+}
+.mdtp__digit.rotate-42 span {
+  transform: rotate(-42deg);
+}
+.mdtp__digit.rotate-48 {
+  transform: rotate(48deg);
+}
+.mdtp__digit.rotate-48 span {
+  transform: rotate(-48deg);
+}
+.mdtp__digit.rotate-54 {
+  transform: rotate(54deg);
+}
+.mdtp__digit.rotate-54 span {
+  transform: rotate(-54deg);
+}
+.mdtp__digit.rotate-60 {
+  transform: rotate(60deg);
+}
+.mdtp__digit.rotate-60 span {
+  transform: rotate(-60deg);
+}
+.mdtp__digit.rotate-66 {
+  transform: rotate(66deg);
+}
+.mdtp__digit.rotate-66 span {
+  transform: rotate(-66deg);
+}
+.mdtp__digit.rotate-72 {
+  transform: rotate(72deg);
+}
+.mdtp__digit.rotate-72 span {
+  transform: rotate(-72deg);
+}
+.mdtp__digit.rotate-78 {
+  transform: rotate(78deg);
+}
+.mdtp__digit.rotate-78 span {
+  transform: rotate(-78deg);
+}
+.mdtp__digit.rotate-84 {
+  transform: rotate(84deg);
+}
+.mdtp__digit.rotate-84 span {
+  transform: rotate(-84deg);
+}
+.mdtp__digit.rotate-90 {
+  transform: rotate(90deg);
+}
+.mdtp__digit.rotate-90 span {
+  transform: rotate(-90deg);
+}
+.mdtp__digit.rotate-96 {
+  transform: rotate(96deg);
+}
+.mdtp__digit.rotate-96 span {
+  transform: rotate(-96deg);
+}
+.mdtp__digit.rotate-102 {
+  transform: rotate(102deg);
+}
+.mdtp__digit.rotate-102 span {
+  transform: rotate(-102deg);
+}
+.mdtp__digit.rotate-108 {
+  transform: rotate(108deg);
+}
+.mdtp__digit.rotate-108 span {
+  transform: rotate(-108deg);
+}
+.mdtp__digit.rotate-114 {
+  transform: rotate(114deg);
+}
+.mdtp__digit.rotate-114 span {
+  transform: rotate(-114deg);
+}
+.mdtp__digit.rotate-120 {
+  transform: rotate(120deg);
+}
+.mdtp__digit.rotate-120 span {
+  transform: rotate(-120deg);
+}
+.mdtp__digit.rotate-126 {
+  transform: rotate(126deg);
+}
+.mdtp__digit.rotate-126 span {
+  transform: rotate(-126deg);
+}
+.mdtp__digit.rotate-132 {
+  transform: rotate(132deg);
+}
+.mdtp__digit.rotate-132 span {
+  transform: rotate(-132deg);
+}
+.mdtp__digit.rotate-138 {
+  transform: rotate(138deg);
+}
+.mdtp__digit.rotate-138 span {
+  transform: rotate(-138deg);
+}
+.mdtp__digit.rotate-144 {
+  transform: rotate(144deg);
+}
+.mdtp__digit.rotate-144 span {
+  transform: rotate(-144deg);
+}
+.mdtp__digit.rotate-150 {
+  transform: rotate(150deg);
+}
+.mdtp__digit.rotate-150 span {
+  transform: rotate(-150deg);
+}
+.mdtp__digit.rotate-156 {
+  transform: rotate(156deg);
+}
+.mdtp__digit.rotate-156 span {
+  transform: rotate(-156deg);
+}
+.mdtp__digit.rotate-162 {
+  transform: rotate(162deg);
+}
+.mdtp__digit.rotate-162 span {
+  transform: rotate(-162deg);
+}
+.mdtp__digit.rotate-168 {
+  transform: rotate(168deg);
+}
+.mdtp__digit.rotate-168 span {
+  transform: rotate(-168deg);
+}
+.mdtp__digit.rotate-174 {
+  transform: rotate(174deg);
+}
+.mdtp__digit.rotate-174 span {
+  transform: rotate(-174deg);
+}
+.mdtp__digit.rotate-180 {
+  transform: rotate(180deg);
+}
+.mdtp__digit.rotate-180 span {
+  transform: rotate(-180deg);
+}
+.mdtp__digit.rotate-186 {
+  transform: rotate(186deg);
+}
+.mdtp__digit.rotate-186 span {
+  transform: rotate(-186deg);
+}
+.mdtp__digit.rotate-192 {
+  transform: rotate(192deg);
+}
+.mdtp__digit.rotate-192 span {
+  transform: rotate(-192deg);
+}
+.mdtp__digit.rotate-198 {
+  transform: rotate(198deg);
+}
+.mdtp__digit.rotate-198 span {
+  transform: rotate(-198deg);
+}
+.mdtp__digit.rotate-204 {
+  transform: rotate(204deg);
+}
+.mdtp__digit.rotate-204 span {
+  transform: rotate(-204deg);
+}
+.mdtp__digit.rotate-210 {
+  transform: rotate(210deg);
+}
+.mdtp__digit.rotate-210 span {
+  transform: rotate(-210deg);
+}
+.mdtp__digit.rotate-216 {
+  transform: rotate(216deg);
+}
+.mdtp__digit.rotate-216 span {
+  transform: rotate(-216deg);
+}
+.mdtp__digit.rotate-222 {
+  transform: rotate(222deg);
+}
+.mdtp__digit.rotate-222 span {
+  transform: rotate(-222deg);
+}
+.mdtp__digit.rotate-228 {
+  transform: rotate(228deg);
+}
+.mdtp__digit.rotate-228 span {
+  transform: rotate(-228deg);
+}
+.mdtp__digit.rotate-234 {
+  transform: rotate(234deg);
+}
+.mdtp__digit.rotate-234 span {
+  transform: rotate(-234deg);
+}
+.mdtp__digit.rotate-240 {
+  transform: rotate(240deg);
+}
+.mdtp__digit.rotate-240 span {
+  transform: rotate(-240deg);
+}
+.mdtp__digit.rotate-246 {
+  transform: rotate(246deg);
+}
+.mdtp__digit.rotate-246 span {
+  transform: rotate(-246deg);
+}
+.mdtp__digit.rotate-252 {
+  transform: rotate(252deg);
+}
+.mdtp__digit.rotate-252 span {
+  transform: rotate(-252deg);
+}
+.mdtp__digit.rotate-258 {
+  transform: rotate(258deg);
+}
+.mdtp__digit.rotate-258 span {
+  transform: rotate(-258deg);
+}
+.mdtp__digit.rotate-264 {
+  transform: rotate(264deg);
+}
+.mdtp__digit.rotate-264 span {
+  transform: rotate(-264deg);
+}
+.mdtp__digit.rotate-270 {
+  transform: rotate(270deg);
+}
+.mdtp__digit.rotate-270 span {
+  transform: rotate(-270deg);
+}
+.mdtp__digit.rotate-276 {
+  transform: rotate(276deg);
+}
+.mdtp__digit.rotate-276 span {
+  transform: rotate(-276deg);
+}
+.mdtp__digit.rotate-282 {
+  transform: rotate(282deg);
+}
+.mdtp__digit.rotate-282 span {
+  transform: rotate(-282deg);
+}
+.mdtp__digit.rotate-288 {
+  transform: rotate(288deg);
+}
+.mdtp__digit.rotate-288 span {
+  transform: rotate(-288deg);
+}
+.mdtp__digit.rotate-294 {
+  transform: rotate(294deg);
+}
+.mdtp__digit.rotate-294 span {
+  transform: rotate(-294deg);
+}
+.mdtp__digit.rotate-300 {
+  transform: rotate(300deg);
+}
+.mdtp__digit.rotate-300 span {
+  transform: rotate(-300deg);
+}
+.mdtp__digit.rotate-306 {
+  transform: rotate(306deg);
+}
+.mdtp__digit.rotate-306 span {
+  transform: rotate(-306deg);
+}
+.mdtp__digit.rotate-312 {
+  transform: rotate(312deg);
+}
+.mdtp__digit.rotate-312 span {
+  transform: rotate(-312deg);
+}
+.mdtp__digit.rotate-318 {
+  transform: rotate(318deg);
+}
+.mdtp__digit.rotate-318 span {
+  transform: rotate(-318deg);
+}
+.mdtp__digit.rotate-324 {
+  transform: rotate(324deg);
+}
+.mdtp__digit.rotate-324 span {
+  transform: rotate(-324deg);
+}
+.mdtp__digit.rotate-330 {
+  transform: rotate(330deg);
+}
+.mdtp__digit.rotate-330 span {
+  transform: rotate(-330deg);
+}
+.mdtp__digit.rotate-336 {
+  transform: rotate(336deg);
+}
+.mdtp__digit.rotate-336 span {
+  transform: rotate(-336deg);
+}
+.mdtp__digit.rotate-342 {
+  transform: rotate(342deg);
+}
+.mdtp__digit.rotate-342 span {
+  transform: rotate(-342deg);
+}
+.mdtp__digit.rotate-348 {
+  transform: rotate(348deg);
+}
+.mdtp__digit.rotate-348 span {
+  transform: rotate(-348deg);
+}
+.mdtp__digit.rotate-354 {
+  transform: rotate(354deg);
+}
+.mdtp__digit.rotate-354 span {
+  transform: rotate(-354deg);
+}
+.mdtp__digit.rotate-360 {
+  transform: rotate(360deg);
+}
+.mdtp__digit.rotate-360 span {
+  transform: rotate(-360deg);
+}
+.mdtp__buttons {
+  margin: 0 -10px -10px;
+  text-align: right;
+}
+.mdtp__button {
+  display: inline-block;
+  padding: 0 16px;
+  min-width: 50px;
+  text-align: center;
+  text-transform: uppercase;
+  line-height: 32px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.mdtp__button:hover {
+  background-color: #e0e0e0;
+}
+.mdtp__wrapper[data-theme="blue"] .mdtp__clock .mdtp__am.active,
+.mdtp__wrapper[data-theme="blue"] .mdtp__clock .mdtp__clock_dot,
+.mdtp__wrapper[data-theme="blue"] .mdtp__clock .mdtp__pm.active,
+.mdtp__wrapper[data-theme="blue"] .mdtp__time_holder {
+  background-color: #1565c0;
+}
+.mdtp__wrapper[data-theme="blue"] .mdtp__clock .mdtp__digit span:hover,
+.mdtp__wrapper[data-theme="blue"] .mdtp__digit.active span {
+  background-color: #1565c0 !important;
+}
+.mdtp__wrapper[data-theme="blue"] .mdtp__digit.active:before {
+  background-color: #1565c0;
+}
+.mdtp__wrapper[data-theme="red"] .mdtp__clock .mdtp__am.active,
+.mdtp__wrapper[data-theme="red"] .mdtp__clock .mdtp__clock_dot,
+.mdtp__wrapper[data-theme="red"] .mdtp__clock .mdtp__pm.active,
+.mdtp__wrapper[data-theme="red"] .mdtp__time_holder {
+  background-color: #c62828;
+}
+.mdtp__wrapper[data-theme="red"] .mdtp__clock .mdtp__digit span:hover,
+.mdtp__wrapper[data-theme="red"] .mdtp__digit.active span {
+  background-color: #c62828 !important;
+}
+.mdtp__wrapper[data-theme="red"] .mdtp__digit.active:before {
+  background-color: #c62828;
+}
+.mdtp__wrapper[data-theme="red"] .mdtp__button {
+  color: #c62828;
+}
+.mdtp__wrapper[data-theme="purple"] .mdtp__clock .mdtp__am.active,
+.mdtp__wrapper[data-theme="purple"] .mdtp__clock .mdtp__clock_dot,
+.mdtp__wrapper[data-theme="purple"] .mdtp__clock .mdtp__pm.active,
+.mdtp__wrapper[data-theme="purple"] .mdtp__time_holder {
+  background-color: #6a1b9a;
+}
+.mdtp__wrapper[data-theme="purple"] .mdtp__clock .mdtp__digit span:hover,
+.mdtp__wrapper[data-theme="purple"] .mdtp__digit.active span {
+  background-color: #6a1b9a !important;
+}
+.mdtp__wrapper[data-theme="purple"] .mdtp__digit.active:before {
+  background-color: #6a1b9a;
+}
+.mdtp__wrapper[data-theme="purple"] .mdtp__button {
+  color: #6a1b9a;
+}
+.mdtp__wrapper[data-theme="indigo"] .mdtp__clock .mdtp__am.active,
+.mdtp__wrapper[data-theme="indigo"] .mdtp__clock .mdtp__clock_dot,
+.mdtp__wrapper[data-theme="indigo"] .mdtp__clock .mdtp__pm.active,
+.mdtp__wrapper[data-theme="indigo"] .mdtp__time_holder {
+  background-color: #283593;
+}
+.mdtp__wrapper[data-theme="indigo"] .mdtp__clock .mdtp__digit span:hover,
+.mdtp__wrapper[data-theme="indigo"] .mdtp__digit.active span {
+  background-color: #283593 !important;
+}
+.mdtp__wrapper[data-theme="indigo"] .mdtp__digit.active:before {
+  background-color: #283593;
+}
+.mdtp__wrapper[data-theme="indigo"] .mdtp__button {
+  color: #283593;
+}
+.mdtp__wrapper[data-theme="teal"] .mdtp__clock .mdtp__am.active,
+.mdtp__wrapper[data-theme="teal"] .mdtp__clock .mdtp__clock_dot,
+.mdtp__wrapper[data-theme="teal"] .mdtp__clock .mdtp__pm.active,
+.mdtp__wrapper[data-theme="teal"] .mdtp__time_holder {
+  background-color: #00695c;
+}
+.mdtp__wrapper[data-theme="teal"] .mdtp__clock .mdtp__digit span:hover,
+.mdtp__wrapper[data-theme="teal"] .mdtp__digit.active span {
+  background-color: #00695c !important;
+}
+.mdtp__wrapper[data-theme="teal"] .mdtp__digit.active:before {
+  background-color: #00695c;
+}
+.mdtp__wrapper[data-theme="teal"] .mdtp__button {
+  color: #00695c;
+}
+.mdtp__wrapper[data-theme="green"] .mdtp__clock .mdtp__am.active,
+.mdtp__wrapper[data-theme="green"] .mdtp__clock .mdtp__clock_dot,
+.mdtp__wrapper[data-theme="green"] .mdtp__clock .mdtp__pm.active,
+.mdtp__wrapper[data-theme="green"] .mdtp__time_holder {
+  background-color: #2e7d32;
+}
+.mdtp__wrapper[data-theme="green"] .mdtp__clock .mdtp__digit span:hover,
+.mdtp__wrapper[data-theme="green"] .mdtp__digit.active span {
+  background-color: #2e7d32 !important;
+}
+.mdtp__wrapper[data-theme="green"] .mdtp__digit.active:before {
+  background-color: #2e7d32;
+}
+.mdtp__wrapper[data-theme="green"] .mdtp__button {
+  color: #2e7d32;
+}
+@media (max-height: 360px) {
+  .mdtp__wrapper {
+    flex-direction: row;
+    bottom: 8px;
+  }
+  .mdtp__time_holder {
+    width: 160px;
+    padding: 20px;
+  }
+  .mdtp__clock_holder {
+    padding: 16px;
+  }
+  .mdtp__clock .mdtp__am,
+  .mdtp__clock .mdtp__pm {
+    bottom: -4px;
+  }
+  .mdtp__clock .mdtp__am {
+    left: -4px;
+  }
+  .mdtp__clock .mdtp__pm {
+    right: -4px;
+  }
+}
+@media (max-height: 320px) {
+  .mdtp__wrapper {
+    bottom: 0;
+  }
+}
+
+
+
+    .swal2-html-container
+    {
+        white-space: break-spaces!important;
+        font-size: 15px;
+    }
+
+    .brand-name-margin-set
+    {
+        margin-left: 65px!important;
+    }
+    .sidebar_dark.offcanvas-active #header_top
+    {
+        background-color: #004660!important;
+    }
+.padding_left_css
+{
+    padding: 5px 15px 5px 65px!important;
+}
+.datepicker
+{
+padding-left: 23px!important;
+}
+.itemDisplayNone{display:block;}
+
+.customer-photo {
+            display: inline-block;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-size: 32px 35px;
+            background-position: center center;
+            vertical-align: middle;
+            line-height: 32px;
+            box-shadow: inset 0 0 1px #999, inset 0 0 10px rgba(0,0,0,.2);
+            margin-left: 5px;
+        }
+
+        .customer-name {
+            display: inline-block;
+            vertical-align: middle;
+            line-height: 32px;
+            padding-left: 3px;
+        }
+
+        .k-grid tr .checkbox-align {
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .product-photo {
+            display: inline-block;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-size: 32px 35px;
+            background-position: center center;
+            vertical-align: middle;
+            line-height: 32px;
+            box-shadow: inset 0 0 1px #999, inset 0 0 10px rgba(0,0,0,.2);
+            margin-right: 5px;
+        }
+
+        .product-name {
+            display: inline-block;
+            vertical-align: middle;
+            line-height: 32px;
+            padding-left: 3px;
+        }
+
+        .k-rating-container .k-rating-item {
+            padding: 4px 0;
+        }
+
+        .k-rating-container .k-rating-item .k-icon {
+            font-size: 16px;
+        }
+
+        .dropdown-country-wrap {
+            display: flex;
+            flex-wrap: nowrap;
+            align-items: center;
+            white-space: nowrap;
+        }
+
+        .dropdown-country-wrap img {
+            margin-right: 10px;
+        }
+
+        #grid .k-grid-edit-row > td > .k-rating {
+            margin-left: 0;
+            width: 100%;
+        }
+
+        .k-grid-header {
+    font-weight: bold!important;    
+}
+</style>
+<link rel="stylesheet" href="styles.d3a68c149fe6d5dc.css" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="styles.d3a68c149fe6d5dc.css"></noscript></head>
+
+<body class="font-montserrat sidebar_dark">
+<!-- Page Loader -->
+<app-root></app-root>
+
+
+
+<script src="../assets/assets/bundles/lib.vendor.bundle.js" loading="lazy"></script>
+
+<script src="../assets/assets/bundles/apexcharts.bundle.js" loading="lazy"></script>
+<!-- <script src="../assets/assets/bundles/counterup.bundle.js" loading="lazy"></script> -->
+<script src="../assets/assets/bundles/knobjs.bundle.js" loading="lazy"></script>
+<script src="../assets/assets/bundles/c3.bundle.js" loading="lazy"></script>
+
+<script src="../assets/assets/js/core.js" loading="lazy"></script>
+<script src="../assets/assets/js/page/index.js" loading="lazy"></script>
+
+
+<script src="../assets/assets/plugins/sweetalert/sweetalert.min.js" loading="lazy"></script>
+<script src="../assets/assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js" loading="lazy"></script>
+<script src="../assets/assets/plugins/dropify/js/dropify.min.js" loading="lazy"></script>
+
+<script src="../assets/assets/js/page/dialogs.js" loading="lazy"></script>
+<script src="../assets/assets/js/form/dropify.js" loading="lazy"></script>
+
+<script src="../assets/assets/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.js" loading="lazy"></script>
+<script src="../assets/assets/plugins/bootstrap-multiselect/bootstrap-multiselect.js" loading="lazy"></script>
+<script src="../assets/assets/plugins/multi-select/js/jquery.multi-select.js" loading="lazy"></script>
+<script src="../assets/assets/plugins/jquery.maskedinput/jquery.maskedinput.min.js" loading="lazy"></script>
+<script src="../assets/assets/plugins/jquery-inputmask/jquery.inputmask.bundle.js" loading="lazy"></script>
+<!-- <script src="../assets/assets/plugins/dropify/js/dropify.min.js" loading="lazy"></script> -->
+<script src="../assets/assets/plugins/parsleyjs/js/parsley.min.js"></script>
+<!-- <script src="../assets/assets/bundles/lib.vendor.bundle.js"></script> -->
+
+<script src="../assets/assets/js/sweetalert.js"></script>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/2.4.0/jszip.js"></script>
+
+<script src="https://kendo.cdn.telerik.com/2022.3.1109/js/kendo.all.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.2.2/pdf.js"></script>
+<script>
+    window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.2.2/pdf.worker.js';
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>  
+
+<script src="../assets/assets/js/core.js" loading="lazy"></script>
+
+<!-- <script src="../assets/assets/js/form/form-advanced.js"  loading="lazy"></script> -->
+
+<script src="../assets/assets/js/form/date_picker.js"></script>
+<script>
+
+    $(document).on("click",".btn_open_modal",function(){
+      //  itemDisplayNone
+        $('.open_show_popup').toggleClass('itemDisplayNone');
+
+    })
+    
+    var date = new Date();
+    $('.date_picker').datepicker({
+            autoclose: true,
+            format: 'dd-mm-yyyy',
+            viewMode: 'date',
+            minViewMode: 'date',
+            endDate: new Date(), 
+    });
+
+    $( ".date_picker" ).focusout(function() {
+      $('.date_of_birth_validation').addClass('d-none');
+      $('#dateAndTime').css('border-color','#ced4da');
+    })
+
+    kendo.pdf.defineFont({
+            "DejaVu Sans"             : "https://kendo.cdn.telerik.com/2016.2.607/styles/fonts/DejaVu/DejaVuSans.ttf",
+            "DejaVu Sans|Bold"        : "https://kendo.cdn.telerik.com/2016.2.607/styles/fonts/DejaVu/DejaVuSans-Bold.ttf",
+            "DejaVu Sans|Bold|Italic" : "https://kendo.cdn.telerik.com/2016.2.607/styles/fonts/DejaVu/DejaVuSans-Oblique.ttf",
+            "DejaVu Sans|Italic"      : "https://kendo.cdn.telerik.com/2016.2.607/styles/fonts/DejaVu/DejaVuSans-Oblique.ttf",
+            "WebComponentsIcons"      : "https://kendo.cdn.telerik.com/2017.1.223/styles/fonts/glyphs/WebComponentsIcons.ttf"
+        });
+   
+</script>
+
+
+
+<script src="../runtime.js" type="module"></script><script src="../polyfills.js" type="module"></script><script src="../styles.js" defer></script><script src="../vendor.js" type="module"></script><script src="../main.js" type="module"></script><script src="runtime.1de5c4e609b22f85.js" type="module"></script><script src="polyfills.5fd626fde791e8c3.js" type="module"></script><script src="main.e92293028dfe05c6.js" type="module"></script>
+
+
+
+
+
+
+</body></html>
