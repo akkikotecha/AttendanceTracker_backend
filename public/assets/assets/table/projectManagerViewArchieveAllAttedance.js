@@ -8,7 +8,6 @@ $(document).ready(function() {
         }
     }).resize(); 
 
-    
     setTimeout(function(){
  
         
@@ -37,38 +36,6 @@ $(document).ready(function() {
         console.log("HELLO ");
         getData();
     });
-
-
-
-
-    var start_date = moment().subtract(7, 'days');
-    var end_date = moment();
-
-    $('input[name="daterange_date"]').daterangepicker({
-      opens: 'right',
-      startDate: start_date,
-      endDate: end_date,
-      ranges: {
-         'Today': [moment(), moment()],
-         'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-         'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-         'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-         'This Month': [moment().startOf('month'), moment().endOf('month')],
-         'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-      }
-    }, function(start,end) {
-      //  getData_last_seven_day();
-    });
-
-    
-//getData();
-$('input[name="daterange_date"]').on('apply.daterangepicker', function(ev, picker) {
-    console.log("HELLO ");
-    getData();
-});
-
-getData_last_seven_day();
-
     }, 1000);
 });
 
@@ -121,14 +88,14 @@ $(function() {
 });
 
 
-
+var items = [];
 
 getData();
 
 var date = new Date();
 $('.date_picker').datepicker({
         autoclose: true,
-        format: 'mm-dd-yyyy',
+        format: 'dd-mm-yyyy',
         viewMode: 'date',
         minViewMode: 'date',
         
@@ -151,282 +118,72 @@ $('#selectJobsite').on('change',function(){
     items = [];
     getData();
 })
-
-var scrollOffset = {
-    left: 0,
-    top: 0
-};
-
-// Save the scroll position before the new data is rendered.
-function onGridDataBinding (e) {
-    var container = e.sender.wrapper.children(".k-grid-content"); // or ".k-virtual-scrollable-wrap"
-    scrollOffset.left = container.scrollLeft();
-    scrollOffset.top = container.scrollTop(); // use only if virtual scrolling is disabled
-}
-
-// Restore the scroll position after the new data is rendered.
-function onGridDataBound (e) {
-    var container = e.sender.wrapper.children(".k-grid-content"); // or ".k-virtual-scrollable-wrap"
-    container.scrollLeft(scrollOffset.left);
-    container.scrollTop(scrollOffset.top); // use only if virtual scrolling is disabled
-}
-
-
-
-function getData_last_seven_day()
-{
-    var items = [];
-    const daterangedata = $('input[name="daterange_date"]').val();
-    //console.log("Date Picker : "+daterangedata);                //var ResponseData=[];
-              $.ajax({
-                url:window.localStorage.getItem('BaseURLAPI')+"getGroupAllAttedanceData",
-                method:"POST",
-                data:{date:daterangedata,jobsite:$('#selectJobsite').val(),status:1},
-                headers: {
-                    // 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-                     "Authorization": "Bearer "+localStorage.getItem("APIToken")
-        
-                 },
-                    success:function(result)
-            {
-                console.log(result);
-               var no_emp;
-                $.each(result, (i, val) => {
-                    var data = JSON.stringify(val)
-                   // console.log("I : "+JSON.stringify(result[i]._id.created_at));
-                    var ID = JSON.stringify(result[i]._id.job_site_id[0]).replace(/"/g, " ");
-                    var site_name = JSON.stringify(result[i]._id.job_site_name[0]).replace(/"/g, " ");
-                    var no_of_employee = JSON.stringify(result[i].count).replace(/"/g, " ");
-                    var shift_start_date = JSON.stringify(result[i]._id.shift_date).replace(/"/g, " ");
-                    var created_at = JSON.stringify(result[i]._id.createdAt);
-                    //+"-"+JSON.stringify(result[i]._id.day).replace(/"/g, " ")+"-"+ JSON.stringify(result[i]._id.year).replace(/"/g, " ")+" "+JSON.stringify(result[i]._id.hour).replace(/"/g, " ")+":"+JSON.stringify(result[i]._id.minute).replace(/"/g, " ");
-                    var attedanceUniqueID = JSON.stringify(result[i]._id.attedanceUniqueID).replace(/"/g, " ");
-                    var selectStartTime = JSON.stringify(result[i]._id.selectStartTime).replace(/"/g, " ");
-                    var selectEndTime = JSON.stringify(result[i]._id.selectEndTime).replace(/"/g, " ");
-                    var document_upload = JSON.stringify(result[i]._id.document_upload).replace(/"/g, "");
-                    var selectHourDeduct_default = JSON.stringify(result[i]._id.selectHourDeduct).replace(/"/g, "");
-
-                    
-                    //console.log("document_upload "+document_upload);
-                    
-                //     var dateOne = moment(moment().format('YYYY-MM-DD')+" "+selectStartTime);
-                //     var dateTwo = moment(moment().format('YYYY-MM-DD')+" "+selectEndTime);
-                    
-                //    // console.log(dateOne+" "+dateTwo);
-                //     var hours = dateTwo.diff(dateOne, 'hours')
-                //  var min = dateTwo.diff(dateOne, 'minutes');
-                    
-                //  var minutes = min-(hours * 60);
-                   
-                //   var selectHourDeduct = hours+" Hrs. "+minutes+" Min.";
-
-                    //console.log(" selectStartTime : "+selectStartTime);
-                   // console.log(" selectEndTime : "+selectEndTime);
-                    
-
-                  var dateOne = moment(moment().format('YYYY-MM-DD')+" "+$.trim(selectStartTime));
-                  var dateTwo = moment(moment().format('YYYY-MM-DD')+" "+$.trim(selectEndTime));
-                  
-                 // console.log(dateOne+" "+dateTwo);
-                  var hours = dateTwo.diff(dateOne, 'hours')
-               var min = dateTwo.diff(dateOne, 'minutes');
-               var minutes = min-(hours * 60);
-                var selectHourDeduct = hours+" Hrs. "+minutes+" Min.";
-
-
-                    //var selectHourDeduct = "";
-                    var dateString = shift_start_date.split('T')
-                    var replac_date = created_at.replaceAll('"', "");
-                    //var da = new Date(dateString);
-
-                    items.push({"selectHourDeduct":selectHourDeduct,"attedanceUniqueID":attedanceUniqueID,"ID": ID,"site_name": site_name,"no_of_employee":no_of_employee,"shift_start_date":moment($.trim(dateString[0])).format("MM-DD-YYYY"),"document_upload":document_upload,"selectStartTime": selectStartTime,"selectEndTime": selectEndTime,"created_at":replac_date,"shift_without_formate": shift_start_date,"selectHourDeduct_default":selectHourDeduct_default});
-})
-
-                window.grid =  $("#grid_last_seven_day").kendoGrid({
-                    dataSource: items,
-                    height: 680,
-                    dataBinding: onGridDataBinding,
-                    dataBound: onGridDataBound,
-                    pageable: {
-                        refresh: true,
-                        pageSizes: true,
-                        pageSize:10,
-                        buttonCount: 5
-                      },
-                    sortable: true,
-                    navigatable: true,
-                    resizable: true,
-                    reorderable: true,
-                    toolbarColumnMenu: true,
-                    groupable: true,
-                    toolbar: ["excel", "pdf", "search"],
-                    pdf: {  
-                        allPages: true,  
-                        avoidLinks: true,  
-                        paperSize: "A4",  
-                        margin: {  
-                            top: "2cm",  
-                            left: "0.5cm",  
-                            right: "0.5cm",  
-                            bottom: "1cm"  
-                        },  
-                        landscape: true,  
-                        repeatHeaders: true,  
-                        scale: 0.5  
-                    },
-                    serverSorting: true,
-                    serverFiltering: true,
-                    serverPaging: true,  
-                    sortable: true,
-                    filterable: true,
-                    columnMenu: {
-                        componentType: "classic",
-                    },              
-                    excel: {
-                        fileName: "View Attendance.xlsx",
-                        filterable: true,
-                        allPages: true
-                    },
-                    columns: [
-                    
-                    {
-                        field: "shift_start_date",
-                        title: "Attendance Date",
-                        width: 170
-                    },
-
-                    {
-                        field:"selectStartTime",
-                        title:"Start Time",
-                        width:120
-                    },
-                    {
-                        field:"selectEndTime",
-                        title:"End Time",
-                        width:120
-
-                    },
-                    {
-                        field:"selectHourDeduct",
-                        title:"Shift Hours",
-                        width:150,
-                    },
-                    {
-                        field: "site_name",
-                        title: "Site Name",
-                        lockable: true,
-            
-                        width: 150,
-            
-                    },
-                    {
-                        field:"no_of_employee",
-                        title:"No of Employee",
-                        width:110,
-                    },
-                    {
-                        title: "Attachment",
-                        template:"#if(document_upload != '') {# <a href='#: document_upload#' class='ml-1'  target='_blank'><button class='btn  tag-blue ' title='image' ><i class='fa fa-file' style='font-size: 17px;color: white;'></i></button></a> #} #",
-                        width:120
-                    },
-                    {        
-                        title: "Action",
-                        template: "<button class='btn  tag-blue AttedanceRedirect text-white' data-parent=#:attedanceUniqueID# data-val=#: ID # title='' ><i class='fa fa-eye'> </i></button><button class='btn btn-primary ml-2  edit_data' data-parent=#:attedanceUniqueID# data-st_time='#:selectStartTime#' data-ed_time='#:selectEndTime#' data-without_formate='#:shift_without_formate#' data-created_at='#:created_at#' data-val=#: ID # data-date='#: shift_start_date#' data-hour_deduct='#:selectHourDeduct_default#'  title='Edit' ><i class='fa fa-edit text-white'></i></button><button class='btn btn-warning removeData ml-2' data-val=#:attedanceUniqueID#  title='Delete' ><i class='fa fa-trash text-white'></i></button>",
-                        width: 180   
-                    }, 
-                    {
-                        field:"created_at",
-                        title:"Created Date",
-                        width:150
-                    },
-
-                    ],
-                });
-            
-                }  
-            });
-
-
-    }
-
 function getData()
 {
     var items = [];
     const daterangedata = $('input[name="daterange"]').val();
-    console.log("Date Picker : "+daterangedata);                //var ResponseData=[];
+    console.log("Date Picker : "+daterangedata);
+              console.log("HELLO "+$('#startShiftDate').val());
+                //var ResponseData=[];
               $.ajax({
-                url:window.localStorage.getItem('BaseURLAPI')+"getGroupAllAttedanceData",
+                url:window.localStorage.getItem('BaseURLAPI')+"getPorjectManagerGroupAllAttedanceData",
                 method:"POST",
-                data:{date:daterangedata,jobsite:$('#selectJobsite').val(),status:1},
+                data:{date:daterangedata,jobsite:$('#selectJobsite').val(),prj_id:window.localStorage.getItem('id'),status:0},
                 headers: {
                     // 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
                      "Authorization": "Bearer "+localStorage.getItem("APIToken")
         
                  },
-                    success:function(result)
+        
+            success:function(result)
             {
                 console.log(result);
                var no_emp;
                 $.each(result, (i, val) => {
                     var data = JSON.stringify(val)
-                   // console.log("I : "+JSON.stringify(result[i]._id.created_at));
+                    console.log("I : "+JSON.stringify(result[i]._id.created_at));
                     var ID = JSON.stringify(result[i]._id.job_site_id[0]).replace(/"/g, " ");
                     var site_name = JSON.stringify(result[i]._id.job_site_name[0]).replace(/"/g, " ");
                     var no_of_employee = JSON.stringify(result[i].count).replace(/"/g, " ");
                     var shift_start_date = JSON.stringify(result[i]._id.shift_date).replace(/"/g, " ");
                     var created_at = JSON.stringify(result[i]._id.createdAt);
-                    //+"-"+JSON.stringify(result[i]._id.day).replace(/"/g, " ")+"-"+ JSON.stringify(result[i]._id.year).replace(/"/g, " ")+" "+JSON.stringify(result[i]._id.hour).replace(/"/g, " ")+":"+JSON.stringify(result[i]._id.minute).replace(/"/g, " ");
+                    //var created_at = JSON.stringify(result[i]._id.month).replace(/"/g, " ")+"-"+JSON.stringify(result[i]._id.day).replace(/"/g, " ")+"-"+ JSON.stringify(result[i]._id.year).replace(/"/g, " ")+" "+JSON.stringify(result[i]._id.hour).replace(/"/g, " ")+":"+JSON.stringify(result[i]._id.minute).replace(/"/g, " ");
                     var attedanceUniqueID = JSON.stringify(result[i]._id.attedanceUniqueID).replace(/"/g, " ");
                     var selectStartTime = JSON.stringify(result[i]._id.selectStartTime).replace(/"/g, " ");
                     var selectEndTime = JSON.stringify(result[i]._id.selectEndTime).replace(/"/g, " ");
                     var document_upload = JSON.stringify(result[i]._id.document_upload).replace(/"/g, "");
                     var selectHourDeduct_default = JSON.stringify(result[i]._id.selectHourDeduct).replace(/"/g, "");
 
+                    console.log("document_upload "+document_upload);
                     
-                    //console.log("document_upload "+document_upload);
-                    
-                //     var dateOne = moment(moment().format('YYYY-MM-DD')+" "+selectStartTime);
-                //     var dateTwo = moment(moment().format('YYYY-MM-DD')+" "+selectEndTime);
-                    
-                //    // console.log(dateOne+" "+dateTwo);
-                //     var hours = dateTwo.diff(dateOne, 'hours')
-                //  var min = dateTwo.diff(dateOne, 'minutes');
-                    
-                //  var minutes = min-(hours * 60);
-                   
-                //   var selectHourDeduct = hours+" Hrs. "+minutes+" Min.";
-
-                    //console.log(" selectStartTime : "+selectStartTime);
-                   // console.log(" selectEndTime : "+selectEndTime);
-                    
-
-                  var dateOne = moment(moment().format('YYYY-MM-DD')+" "+$.trim(selectStartTime));
-                  var dateTwo = moment(moment().format('YYYY-MM-DD')+" "+$.trim(selectEndTime));
-                  
-                 // console.log(dateOne+" "+dateTwo);
-                  var hours = dateTwo.diff(dateOne, 'hours')
-               var min = dateTwo.diff(dateOne, 'minutes');
-               var minutes = min-(hours * 60);
-                var selectHourDeduct = hours+" Hrs. "+minutes+" Min.";
-
-
-                    //var selectHourDeduct = "";
-                    var dateString = shift_start_date.split('T')
+                    var dateOne = moment(moment().format('YYYY-MM-DD')+" "+$.trim(selectStartTime));
+                    var dateTwo = moment(moment().format('YYYY-MM-DD')+" "+$.trim(selectEndTime));
                     var replac_date = created_at.replaceAll('"', "");
-                    //var da = new Date(dateString);
+                   // console.log(dateOne+" "+dateTwo);
+                    var hours = dateTwo.diff(dateOne, 'hours')
+                 var min = dateTwo.diff(dateOne, 'minutes');
+                    
+                 var minutes = min-(hours * 60);
+                   
+                  var selectHourDeduct = hours+" Hrs. "+minutes+" Min.";
 
-                    items.push({"selectHourDeduct":selectHourDeduct,"attedanceUniqueID":attedanceUniqueID,"ID": ID,"site_name": site_name,"no_of_employee":no_of_employee,"shift_start_date":moment($.trim(dateString[0])).format("MM-DD-YYYY"),"document_upload":document_upload,"selectStartTime": selectStartTime,"selectEndTime": selectEndTime,"created_at":replac_date,"shift_without_formate": shift_start_date,"selectHourDeduct_default":selectHourDeduct_default});
-})
+                  var dateString = shift_start_date.split('T')
+                    //var selectHourDeduct = "";
+            
+                    items.push({"selectHourDeduct":selectHourDeduct,"attedanceUniqueID":attedanceUniqueID,"ID": ID,"site_name": site_name,"no_of_employee":no_of_employee,"shift_start_date": moment($.trim(dateString[0])).format("MM-DD-YYYY"),"selectStartTime": selectStartTime,"selectEndTime": selectEndTime,"created_at":replac_date,"document_upload":document_upload,"shift_without_formate": shift_start_date,"selectHourDeduct_default":selectHourDeduct_default});
+                  })
 
-                window.grid =  $("#grid").kendoGrid({
+                 //console.log("HELLO "+items);
+                  //return false;
+                  $("#grid").kendoGrid({
                     dataSource: items,
                     height: 680,
-                    dataBinding: onGridDataBinding,
-                    dataBound: onGridDataBound,
+            //                    editable: "incell",
                     pageable: {
                         refresh: true,
                         pageSizes: true,
                         pageSize:10,
+
                         buttonCount: 5
                       },
                     sortable: true,
@@ -435,21 +192,8 @@ function getData()
                     reorderable: true,
                     toolbarColumnMenu: true,
                     groupable: true,
+                    dataBound: onDataBound,
                     toolbar: ["excel", "pdf", "search"],
-                    pdf: {  
-                        allPages: true,  
-                        avoidLinks: true,  
-                        paperSize: "A4",  
-                        margin: {  
-                            top: "2cm",  
-                            left: "0.5cm",  
-                            right: "0.5cm",  
-                            bottom: "1cm"  
-                        },  
-                        landscape: true,  
-                        repeatHeaders: true,  
-                        scale: 0.5  
-                    },
                     serverSorting: true,
                     serverFiltering: true,
                     serverPaging: true,  
@@ -507,15 +251,14 @@ function getData()
                     },
                     {        
                         title: "Action",
-                        template: "<button class='btn  tag-blue AttedanceRedirect text-white' data-parent=#:attedanceUniqueID# data-val=#: ID # title='' ><i class='fa fa-eye'> </i></button><button class='btn btn-primary ml-2  edit_data' data-parent=#:attedanceUniqueID# data-st_time='#:selectStartTime#' data-ed_time='#:selectEndTime#' data-without_formate='#:shift_without_formate#' data-created_at='#:created_at#' data-val=#: ID # data-date='#: shift_start_date#' data-hour_deduct='#:selectHourDeduct_default#'  title='Edit' ><i class='fa fa-edit text-white'></i></button><button class='btn btn-warning removeData ml-2' data-val=#:attedanceUniqueID#  title='Delete' ><i class='fa fa-trash text-white'></i></button>",
+                        template: "<button class='btn  tag-blue AttedanceRedirect text-white' data-parent=#:attedanceUniqueID# data-val=#: ID # title='' ><i class='fa fa-eye'> </i></button><button class='btn btn-primary ml-2  edit_data' data-parent=#:attedanceUniqueID# data-st_time='#:selectStartTime#' data-ed_time='#:selectEndTime#' data-without_formate='#:shift_without_formate#' data-created_at='#:created_at#' data-val=#: ID # data-date='#: shift_start_date#'  title='Edit' data-hour_deduct='#:selectHourDeduct_default#' ><i class='fa fa-edit text-white'></i></button><button class='btn btn-warning removeData ml-2' data-val=#:attedanceUniqueID#  title='Delete' ><i class='fa fa-trash text-white'></i></button>",
                         width: 180   
-                    }, 
+                    },
                     {
                         field:"created_at",
                         title:"Created Date",
                         width:150
                     },
-
                     ],
                 });
             
@@ -658,32 +401,13 @@ function getData()
             //console.log("EJJJEE");
             var id=$(this).attr('data-val');
             var parent=$(this).attr('data-parent');
-           
             window.localStorage.setItem("selectJobSiteid",id);
-
             window.localStorage.setItem("parent_attedanceID",parent);
-
-            //console.log(window.localStorage.getItem('baseurlhostname')+"selectAttendanceDetail");
-            window.location.href = window.localStorage.getItem('baseurlhostname')+"viewAttedance"
+            window.location.href = window.localStorage.getItem('baseurlhostname')+"viewProjectManagerArchieveAttedance";
           //  window.location.reload();
             //$('#selectProjectManager').modal('show');
         })
 
-
-        $('#grid_last_seven_day').on("click","button.AttedanceRedirect",function(){
-            //console.log("EJJJEE");
-            var id=$(this).attr('data-val');
-            var parent=$(this).attr('data-parent');
-           
-            window.localStorage.setItem("selectJobSiteid",id);
-
-            window.localStorage.setItem("parent_attedanceID",parent);
-
-            //console.log(window.localStorage.getItem('baseurlhostname')+"selectAttendanceDetail");
-            window.location.href = window.localStorage.getItem('baseurlhostname')+"viewAttedance"
-          //  window.location.reload();
-            //$('#selectProjectManager').modal('show');
-        })
 
         $("#grid").on("click", "button.removeData", function() {
             var id=$(this).attr('data-val');
@@ -700,7 +424,7 @@ function getData()
       
            // console.log(window.localStorage.getItem('BaseURLAPI')+"deleteProjectManager/"+id);
             $.ajax({
-                url:window.localStorage.getItem('BaseURLAPI')+"deleteViewAllAttedance/"+id+"/0",
+                url:window.localStorage.getItem('BaseURLAPI')+"deleteViewAllAttedance/"+id+"/1",
                 method:"GET",
                // data:x,_token:"{{ csrf_token() }}",
                headers: {
@@ -708,7 +432,8 @@ function getData()
                  "Authorization": "Bearer "+localStorage.getItem("APIToken")
     
              },
-                    success:function(result)
+    
+                success:function(result)
                 {
                    Swal.fire({
                         title: 'Attendance Deleted Successfully...',
@@ -725,44 +450,7 @@ function getData()
 });
 
 
-$("#grid_last_seven_day").on("click", "button.removeData", function() {
-    var id=$(this).attr('data-val');
-    Swal.fire({
-        title: 'Do you want to delete this attendance?',
-        text: "",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#fd7e14',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes'
-      }).then((result) => {
-        if (result.isConfirmed) {
 
-   // console.log(window.localStorage.getItem('BaseURLAPI')+"deleteProjectManager/"+id);
-    $.ajax({
-        url:window.localStorage.getItem('BaseURLAPI')+"deleteViewAllAttedance/"+id+"/0",
-        method:"GET",
-       // data:x,_token:"{{ csrf_token() }}",
-       headers: {
-        // 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-         "Authorization": "Bearer "+localStorage.getItem("APIToken")
-
-     },
-    success:function(result)
-        {
-           Swal.fire({
-                title: 'Attendance Deleted Successfully...',
-                text: '',
-                icon: 'success',
-                confirmButtonText: 'ok',
-                confirmButtonColor: "#fd7e14"
-            });
-            window.location.reload();
-        }
-    });
-}
-})
-});
 
 var global_edit_job_site_id = '';
 var global_edit_unique_id = '';
@@ -774,8 +462,6 @@ var global_set_start_time = '';
 var global_set_end_time='';
 var global_created_at = '';
 var global_min_deduct = '';
-
-
 
 $("#grid").on("click", "button.edit_data", function() {
     //console.log("HELLO");
@@ -789,31 +475,6 @@ $("#grid").on("click", "button.edit_data", function() {
     global_set_start_time = $(this).attr('data-st_time');
     global_set_end_time = $(this).attr('data-ed_time');
     global_created_at = $(this).attr('data-created_at');
-    global_min_deduct = $(this).attr('data-hour_deduct')
-
-   
-edit_data();
-
-
-
-    $('#editAttedanceData').modal('show');
-})
-
-
-
-$("#grid_last_seven_day").on("click", "button.edit_data", function() {
-    //console.log("HELLO");
-    parent_id = $(this).attr('data-parent');
-     objectid = $(this).attr('data-val');
-
-    global_edit_job_site_id = $(this).attr('data-val');
-    global_edit_unique_id  = $(this).attr('data-parent');
-    global_edit_date = $(this).attr('data-date');
-    global_without_formate = $(this).attr('data-without_formate');
-    global_set_start_time = $(this).attr('data-st_time');
-    global_set_end_time = $(this).attr('data-ed_time');
-    global_created_at = $(this).attr('data-created_at');
-    global_min_deduct = $(this).attr('data-hour_deduct')
 
    
 edit_data();
@@ -828,7 +489,7 @@ function edit_data()
     $.ajax({
         url:window.localStorage.getItem('BaseURLAPI')+"getAllAttedanceData",
         method:"POST",
-        data:{date:"",parent_id:parent_id,selectJobSiteid:objectid,status:1},
+        data:{date:"",parent_id:parent_id,selectJobSiteid:objectid,status:0},
         headers: {
             // 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
              "Authorization": "Bearer "+localStorage.getItem("APIToken")
@@ -925,7 +586,7 @@ function edit_data()
             {
                 field:"shift_end_time",
                 title:"Shift End Time",
-                template: '<div class="form-group"><label>End Time<i class="text-red">*</i></label><div class="input-group  "><input type="text" class="form-control id_3" name="endShiftTime" placeholder="Shift End" style="background-color:white!important" id="shift_end_time_#:ID#" value="#: shift_end_time #"><span class="input-group-addon input_new_group"><i class="fa fa-clock-o"></i></span> </div></div>',                       
+                template: '<div class="form-group"><label>End Time<i class="text-red">*</i></label><div class="input-group  "><input type="text" class="form-control  id_3" name="endShiftTime" placeholder="Shift End" style="background-color:white!important" id="shift_end_time_#:ID#" value="#: shift_end_time #"><span class="input-group-addon input_new_group"><i class="fa fa-clock-o"></i></span> </div></div>',                       
                 width: 130
         
             },
@@ -946,8 +607,9 @@ function edit_data()
 }
 
 
-$(document).on("click", ".submitAddAttedanceData", function() {
 
+$(document).on("click", ".submitAddAttedanceData", function() {
+   
 
     $('#global_edit_job_site_id').val(global_edit_job_site_id);
     $('#global_edit_unique_id').val(global_edit_unique_id);
@@ -955,98 +617,24 @@ $(document).on("click", ".submitAddAttedanceData", function() {
     $('#global_set_start_time').val($.trim(global_set_start_time));
     $('#global_set_end_time').val($.trim(global_set_end_time));
     $('#global_created_at').val($.trim(global_created_at));
-    $('#add_start_date').val(global_edit_date);
     $('#global_min_deduct').val($.trim(global_min_deduct));
    
-    
+    $('#add_start_date').val(global_edit_date);
+
     $('#add_attendance_start_time').val('');
     $('#add_attendance_end_time').val('');
-    $('#add_attendance_min_deudct').val('');
+  $('#add_attendance_min_deudct').val('');
     $('#add_attendance_note').val('');
+    
     $('#select_multiple_data').val(''); 
     $('#select_multiple_data').trigger('change')
+
     $('#assign_id').val(window.localStorage.getItem("id"));
     $('#addAttendanceData').modal('show');
+
+
+
 });
-
-$('.SubmitAttedanceFormData').on("click",function(){
-    if ($('#SubmitAttedanceForm').parsley().validate()) {  
-
-        Swal.fire({
-          title: 'Do you want to add this Attendance?',
-          text: "",
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#fd7e14',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Yes'
-        }).then((result) => {
-          if (result.isConfirmed) {
-  
-                //console.log($('#select_multiple_data').val());
-       //   const fda =new FormData();
-
-//          fda.append('myFile',this.image);
-          
-          /*fda.append('global_edit_job_site_id',$('#global_edit_job_site_id').val());
-          fda.append('global_edit_date',$('#global_edit_date').val());
-          fda.append('global_edit_unique_id',$('#global_edit_unique_id').val());
-          
-          fda.append('add_attendance_start_time',$('#first_name').val());
-          fda.append('add_attendance_end_time',$('#last_name').val());
-          fda.append('add_attendance_min_deudct',$('#mobile_number').val());
-          fda.append('add_attendance_note',$('#email').val());*/
-          
-          $.ajax({
-            url:window.localStorage.getItem('BaseURLAPI')+"addAttedanceEdit",
-            method:"POST",
-            data:$('#SubmitAttedanceForm').serializeArray(),
-            headers: {
-                // 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-                 "Authorization": "Bearer "+localStorage.getItem("APIToken")
-    
-             },
-    
-            success:function(result)
-            {
-            //    console.log(result.message);
-                if(result.message=="Added")
-                {
-                   //$('.display_msg').removeClass('d-none');
-                    Swal.fire({
-                        title: 'Attendance Added Successfully',
-                        text: '',
-                        icon: 'success',
-                        confirmButtonText: 'ok',
-                        confirmButtonColor: "#fd7e14"
-                    });
-                    setTimeout(function() {
-
-                    //window.location.reload();
-                    $('#add_attendance_start_time').val('');
-                    $('#add_attendance_end_time').val('');
-                    $('#add_attendance_min_deudct').val('');
-                    $('#add_attendance_note').val('');
-                    $('#select_multiple_data').val(''); 
-                    $('#select_multiple_data').trigger('change')
-                    // getData();
-                    //window.location.reload();
-                    $('#addAttendanceData').modal('hide');
-                    edit_data();
-         
-                    }, 2500);
-                }else{
-                    $('.display_msg').removeClass('d-none');
-                } 
-            }  
-        });
-      }
-})
-    }
-})
-
-
-
 function enforceMinMax(el) {
     if (el.value != "") {
       if (parseInt(el.value) < parseInt(el.min)) {
@@ -1059,11 +647,10 @@ function enforceMinMax(el) {
   }
 
 
-  
-
 $('.submitAttedanceData').on('click',function(){
     Swal.fire({
         title: 'Do you want to edit this attendance?',
+
         text: "",
         icon: 'warning',
         showCancelButton: true,
@@ -1094,7 +681,8 @@ $('.submitAttedanceData').on('click',function(){
                          "Authorization": "Bearer "+localStorage.getItem("APIToken")
             
                      },
-                                success:function(result)
+            
+                    success:function(result)
                     {
                     //    console.log(result.message);
                         if(result.message=="Updated")
@@ -1108,7 +696,6 @@ $('.submitAttedanceData').on('click',function(){
                                 confirmButtonColor: "#fd7e14"
                             });
                             setTimeout(function() {
-                                //edit_data();
                                 window.location.reload();
                             }, 2500);
                         }else{
@@ -1140,13 +727,14 @@ $('.submitAttedanceData').on('click',function(){
           $.ajax({
             url:window.localStorage.getItem('BaseURLAPI')+"deleteOneAttedanceData",
             method:"POST",
-            data:{'deleteId':id,status:0},
+            data:{'deleteId':id,status:1},
             headers: {
                 // 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
                  "Authorization": "Bearer "+localStorage.getItem("APIToken")
     
              },
-                success:function(result)
+    
+            success:function(result)
             {
             //    console.log(result.message);
 
@@ -1177,17 +765,81 @@ $('.submitAttedanceData').on('click',function(){
       });
 
 
-      $('#saveTabularData').on('click',function(){
-
-        kendo.spreadsheet.drawTabularData({
-          dataSource: grid.dataSource,
-          columns: grid.columns,
-          headerBackground: "#567",
-          headerColor: "#fff",
-          evenBackground: "#eee",
-        }).then(function(group){
-          kendo.pdf.saveAs(group, "test.pdf");
-        });
+      $('.SubmitAttedanceFormData').on("click",function(){
+        if ($('#SubmitAttedanceForm').parsley().validate()) {  
+            
+    
+    
+            Swal.fire({
+              title: 'Do you want to add this Attendance?',
+              text: "",
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#fd7e14',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Yes'
+            }).then((result) => {
+              if (result.isConfirmed) {
+      
+                    //console.log($('#select_multiple_data').val());
+           //   const fda =new FormData();
+    
+    //          fda.append('myFile',this.image);
+              
+              /*fda.append('global_edit_job_site_id',$('#global_edit_job_site_id').val());
+              fda.append('global_edit_date',$('#global_edit_date').val());
+              fda.append('global_edit_unique_id',$('#global_edit_unique_id').val());
+              
+              fda.append('add_attendance_start_time',$('#first_name').val());
+              fda.append('add_attendance_end_time',$('#last_name').val());
+              fda.append('add_attendance_min_deudct',$('#mobile_number').val());
+              fda.append('add_attendance_note',$('#email').val());*/
+              
+              $.ajax({
+                url:window.localStorage.getItem('BaseURLAPI')+"addAttedanceEdit",
+                method:"POST",
+                data:$('#SubmitAttedanceForm').serializeArray(),
+                headers: {
+                    // 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                     "Authorization": "Bearer "+localStorage.getItem("APIToken")
+        
+                 },
+        
+                success:function(result)
+                {
+                //    console.log(result.message);
+                    if(result.message=="Added")
+                    {
+                       //$('.display_msg').removeClass('d-none');
+                        Swal.fire({
+                            title: 'Attendance Added Successfully',
+                            text: '',
+                            icon: 'success',
+                            confirmButtonText: 'ok',
+                            confirmButtonColor: "#fd7e14"
+                        });
+                        setTimeout(function() {
+    
+                           // window.location.reload();
+    
+                        $('#add_attendance_start_time').val('');
+              $('#add_attendance_end_time').val('');
+            $('#add_attendance_min_deudct').val('');
+              $('#add_attendance_note').val('');
+              $('#select_multiple_data').val(''); 
+              $('#select_multiple_data').trigger('change')
+             // getData();
+             // window.location.reload();
+             // edit_data();
+                            $('#addAttendanceData').modal('hide');
+                            edit_data();
+                        }, 2500);
+                    }else{
+                        $('.display_msg').removeClass('d-none');
+                    } 
+                }  
+            });
+          }
     })
-
-          
+        }
+    })

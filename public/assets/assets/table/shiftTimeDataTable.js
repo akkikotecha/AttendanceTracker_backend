@@ -131,10 +131,12 @@ $(document).ready(function () {
                 url:window.localStorage.getItem('BaseURLAPI')+"getShiftTime",
                 method:"GET",
                // data:x,_token:"{{ csrf_token() }}",
-                headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            success:function(result)
+               headers: {
+                // 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                 "Authorization": "Bearer "+localStorage.getItem("APIToken")
+    
+             },
+                success:function(result)
             {
                     
                 $.each(result, (i, val) => {
@@ -333,10 +335,12 @@ $(document).ready(function () {
                 url:window.localStorage.getItem('BaseURLAPI')+"deleteShiftTime/"+id,
                 method:"GET",
                // data:x,_token:"{{ csrf_token() }}",
-                headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            success:function(result)
+               headers: {
+                // 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                 "Authorization": "Bearer "+localStorage.getItem("APIToken")
+    
+             },
+                success:function(result)
             {
                 Swal.fire({
                     title: 'Shift Duration Deleted Successfully...',

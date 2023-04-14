@@ -9,38 +9,40 @@ $(document).ready(function() {
     }).resize(); 
 
 
+
     setTimeout(function(){
  
         
-    var start = moment().subtract(29, 'days');
-    var end = moment();
-
-    $('input[name="daterange"]').daterangepicker({
-      opens: 'right',
-      startDate: start,
-      endDate: end,
-      ranges: {
-         'Today': [moment(), moment()],
-         'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-         'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-         'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-         'This Month': [moment().startOf('month'), moment().endOf('month')],
-         'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-      }
-    }, function(start,end) {
-      //  getData();
+        var start = moment().subtract(29, 'days');
+        var end = moment();
+    
+        $('input[name="daterange"]').daterangepicker({
+          opens: 'right',
+          startDate: start,
+          endDate: end,
+          ranges: {
+             'Today': [moment(), moment()],
+             'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+             'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+             'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+             'This Month': [moment().startOf('month'), moment().endOf('month')],
+             'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+          }
+        }, function(start,end) {
+          //  getData();
+        });
+    
+        
+    //getData();
+    $('input[name="daterange"]').on('apply.daterangepicker', function(ev, picker) {
+        console.log("HELLO ");
+        getData();
     });
-
+    }, 1000);
     
 //getData();
-$('input[name="daterange"]').on('apply.daterangepicker', function(ev, picker) {
-    console.log("HELLO ");
-    getData();
-});
-}, 1000);
-     
-});
 
+});
 
 
 
@@ -167,7 +169,7 @@ function getData()
                 
 
                 $.ajax({
-                url:window.localStorage.getItem('BaseURLAPI')+"getMasterReport",
+                url:window.localStorage.getItem('BaseURLAPI')+"getEmployeeReport",
                 method:"POST",
                 data:{date:daterangedata,employee:strVal,jobsite:JobSiteVal},
                 headers: {
@@ -178,215 +180,134 @@ function getData()
         
                 success:function(result)
                 {
-                    console.log(result);
-                   var no_emp;
-    
-                   var attedance_date,site_name,hour_deduct;
+                  //console.log("HELLO "+JSON.stringify(result));
+                    var dateVal = [];
+                    var final_total = [];
+                    
                     $.each(result, (i, val) => {
-    
-                            if(val.no_of_employee == "null" || val.no_of_employee =="")
-                            {
-                                no_emp = "";
-                            }else{
-                                no_emp = val.no_of_employee;
-                            }
-                            var updated_date_formate = val.updatedAt;  
-    
-                            var created_date_formate = val.createdAt;  
-                            site_name = val['jobSiteData'][0].site_name;
-                            
-                            hour_deduct = val.hour_deduct;
-    
-                            // dt2 = new Date(moment().format('DD-MM-YYYY')+" "+val.shift_start_time);
-                            // dt1 = new Date(moment().format('DD-MM-YYYY')+" "+val.shift_end_time);
-                            
-                            var dateOne = moment(moment().format('YYYY-MM-DD')+" "+val.shift_start_time);
-                            var dateTwo = moment(moment().format('YYYY-MM-DD')+" "+val.shift_end_time);
-                            
-                           // console.log(dateOne+" "+dateTwo);
-                            var hours = dateTwo.diff(dateOne, 'hours')
-                         var min = dateTwo.diff(dateOne, 'minutes');
-                         var minutes = min-(hours * 60);
-                          var selectHourDeduct = hours+" Hrs. "+minutes+" Min.";
-        
-    
-                          var total = val.hour_deduct;
-                // Getting the hours.
-                var hrs = Math.floor(total / 60);
-                // Getting the minutes.
-                var min = total % 60;
-    
-    var startTime = moment(hours+":"+minutes, 'HH:mm');
-    var endTime = moment(hrs+":"+min, 'HH:mm');
-    
-    // calculate total duration
-    var duration = moment.duration(startTime.diff(endTime));
-    
-    // duration in hours
-    var total_hours = parseInt(duration.asHours());
-    
-    // duration in minutes
-    var total_minutes = parseInt(duration.asMinutes()) % 60;
-    
-    if(val.shift_start_date != "")
-    {
-        attedance_date = val.shift_start_date;
-    var dateString = attedance_date.split('T');
-    var dateString_data = moment($.trim(dateString[0])).format("MM-DD-YYYY");
+              
+                        if (jQuery.inArray(val.empforemenData[0]['first_name']+" "+val.empforemenData[0]['last_name'], dateVal) === -1)
+                        {
+                            dateVal.push(val.empforemenData[0]['first_name']+" "+val.empforemenData[0]['last_name']);
+                            var startTime = moment(val.shift_start_time, 'HH:mm A');
+                            var endTime = moment(val.shift_end_time, 'HH:mm A');
+                            var duration = moment.duration(endTime.diff(startTime));
+                            var hours = parseInt(duration.asHours());
+                            var minutes = parseInt(duration.asMinutes()) % 60;                            
+                            var final_min = Number(hours) * 60 + Number(minutes);
 
-    }else
-    {
-        attedance_date = "";
-        var dateString_data = "";
+                        final_total.push({'emp_name':val.empforemenData[0]['first_name']+" "+val.empforemenData[0]['last_name'],'total':final_min,'hour_deduct':val.hour_deduct})
+                            
+                        }else{
+                            var startTime = moment(val.shift_start_time, 'HH:mm A');
+                            var endTime = moment(val.shift_end_time, 'HH:mm A');
+                            
+                            // calculate total duration
+                            var duration = moment.duration(endTime.diff(startTime));               
+                            var hours = parseInt(duration.asHours());
+                            var minutes = parseInt(duration.asMinutes()) % 60;
+                            var final_min = Number(hours) * 60 + Number(minutes);
 
-    }
-    
-                items.push({'site_name_data':site_name,'attedance_date_data':dateString_data,'total_hour_minute':total_hours+" Hrs. "+total_minutes+" Min.", "selectHourDeduct":selectHourDeduct,"ID": val._id,"created_at": created_date_formate,"updated_at": updated_date_formate,"site_name": val['jobSiteData'][0].site_name,"no_of_employee":no_emp,"type": val.type,"employee_name": val['empforemenData'][0].first_name+" "+val['empforemenData'][0].last_name, "shift_start_date": val.shift_start_date, "shift_start_time": moment(val.shift_start_time,'H:mm').format('HH:mm'), "shift_end_time": moment(val.shift_end_time,'h:mm').format('HH:mm'), "hour_deduct": hrs +
-                " Hrs.  " + min + " Min." });
-                      })
-                      
+                            final_total.push({'emp_name':val.empforemenData[0]['first_name']+" "+val.empforemenData[0]['last_name'],'total':final_min,'hour_deduct':Number(val.hour_deduct)})
+                        }
+
+                    })
+                    var final_date = [];
+                    var count = [];
+                    var ta;
+                  
+                    console.log("final_total : "+JSON.stringify(final_total));
+                    var final_array_result = [];
+                    final_total.reduce(function(res, value) {
+                        if (!res[value.emp_name]) {
+                          res[value.emp_name] = { emp_name: value.emp_name, total: 0 };
+                          final_array_result.push(res[value.emp_name])
+                        }
+                        res[value.emp_name].total += value.total;
+                        return res;
+                      }, {});
+
+                   
+                    $.each(final_array_result, (i, value) => {
+
+                        if(value.hour_deduct == "")
+                        {
+                            var min_and_total  = value.total;
+                        var minutes = min_and_total%60;
+                        var hours = (min_and_total - minutes) / 60;
+
+                        }else{
+                            var min_and_total  = value.total - value.hour_deduct;
+                            var minutes = min_and_total%60;
+                            var hours = (min_and_total - minutes) / 60;
+                        }
                         
-                      //  $('#hour_deduct_show').text(hour_deduct);
-                        
-                     // console.log(items);
-                      //return false;
-                      $("#grid").kendoGrid({
-                        dataSource: items,
-                        height: 680,
-                //                    editable: "incell",
-                        pageable: {
-                            refresh: true,
-                            pageSizes: true,
-                            pageSize:10,
-    
-                            buttonCount: 5
-                          },
-                        sortable: true,
-                        navigatable: true,
-                        resizable: true,
-                        reorderable: true,
-                        toolbarColumnMenu: true,
-                        groupable: true,
-                        dataBound: onDataBound,
-                        toolbar: ["excel", "pdf", "search"],
-                        pdf: {  
-                            allPages: true,  
-                            avoidLinks: true,  
-                            paperSize: "A4",  
-                            margin: {  
-                                top: "2cm",  
-                                left: "0.5cm",  
-                                right: "0.5cm",  
-                                bottom: "1cm"  
-                            },  
-                            landscape: true,  
-                            repeatHeaders: true,  
-                            template: $("#attedance_date_show").html(),  
-                            scale: 0.5  
-                        },
-                        pdfExport: function(e) {
-                            var rows = e.sender.table[0].rows;
-        
-                            for (var i = 0; i < rows.length; i++) {
-                                var row = rows[i];
-                                if (!$(row).hasClass("k-selected")) {
-                                    $(row).addClass("hiddenRow")
-                                };
-                            };
-                            e.promise
-                                .done(function() {
-                                    $(".hiddenRow").each(function() {
-                                        $(this).parents("tr").removeClass("hiddenRow");
-                                    });
-                                });
-                        },
-                        serverSorting: true,
-                        serverFiltering: true,
-                        serverPaging: true,  
-                        sortable: true,
+//                        console.log(hours + ":" + minutes);
+                        var hours_str = " Hours ";
+                        var minute_str = " Minutes ";
+                        if(hours < 2)
+                        {
+                            hours_str = ' Hour ';
+                        }
+                        if(minutes < 2)
+                        {
+                            minute_str = ' Minute ';
+                        }
+                        items.push({"emp_name":value.emp_name,"final_total":hours+hours_str+minutes+minute_str});
+
+                    })
+
+                  $("#grid").kendoGrid({
+                    dataSource: items,
+                    height: 680,
+            //      editable: "incell",
+                    pageable: {
+                        refresh: true,
+                        pageSizes: true,
+                        pageSize:10,
+
+                        buttonCount: 5
+                      },
+                    sortable: true,
+                    navigatable: true,
+                    resizable: true,
+                    reorderable: true,
+                    toolbarColumnMenu: true,
+                    groupable: true,
+                    dataBound: onDataBound,
+                    toolbar: ["excel", "pdf", "search"],
+                    serverSorting: true,
+                    serverFiltering: true,
+                    serverPaging: true,  
+                    sortable: true,
+                    filterable: true,
+                    columnMenu: {
+                        componentType: "classic",
+                    },              
+                    excel: {
+                        fileName: "View Employee Report.xlsx",
                         filterable: true,
-                        columnMenu: {
-                            componentType: "classic",
-                        },              
-                        excel: {
-                            fileName: "View Attendance.xlsx",
-                            filterable: true,
-                            allPages: true
-                        },
-                        columns: [
-                        //     {
-                        //     selectable: true,
-                        //     width: 75,                    //     attributes: {
-                        //         "class": "checkbox-align",
-                        //     },
-                        //     headerAttributes: {
-                        //         "class": "checkbox-align",
-                        //     }
-                        // },
-                {
-                    field:"attedance_date_data",
-                            title:"Attedance Date",
-                            hidden: false,
-                            width:150,
-        
-                },
-                {
-                    field:"site_name_data",
-                            title:"Site Name",
-                    hidden: false,
-                       width:150,
-        
-                },
-                                {
-                            field:"employee_name",
-                            title:"Employee/Foreman",
-                            width:150,
-       
-                        },
-                        
-    
-                          {
-                            field: "shift_start_time",
-                            title: "Shift Start Time",
-                            format: "{0:c}",
-                            width: 130
-                        }, {
-                            field: "shift_end_time",
-                            title: "Shift End Time",
-                            width: 130,
-                        },
-                        {
-                            field:"selectHourDeduct",
-                            title:"Shift Hours",
-                            width:150,
-                        },
-                        {
-                            field:"hour_deduct",
-                            title:"Hrs Deduct",
-                            width:120,
-                        },
-                        {
-                            field:"total_hour_minute",
-                            title:"Total Hours",
-                            width:120,
-                        },
-                        {
-                            field: "created_at",
-                            title: "Created Date",
-                            lockable: true,
-                
-                            width: 180,
-                
-                        },
-                       
-                
-                        ],
-                    });
-                
-                    }  
+                        allPages: true
+                    },
+                    columns: [
+                    
+                    {
+                        field: "emp_name",
+                        title: "Name",
+                        width: 170
+                    },
+                    
+                    {
+                        field: "final_total",
+                        title: "Total Hours",
+                        width: 170
+                    },
+                    
+                ],
+            });            
+        }  
     });
     $('.page-loader-wrapper').css({'display':'none'});
-
 }
 
      

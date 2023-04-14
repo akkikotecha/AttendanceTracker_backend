@@ -128,13 +128,15 @@ $(document).ready(function () {
               var items = [];
                 //var ResponseData=[];
               $.ajax({
-                url:window.localStorage.getItem('BaseURLAPI')+"getJobsite",
+                url:window.localStorage.getItem('BaseURLAPI')+"active_getJobsite",
                 method:"GET",
                // data:x,_token:"{{ csrf_token() }}",
-                headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            success:function(result)
+               headers: {
+                // 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                 "Authorization": "Bearer "+localStorage.getItem("APIToken")
+    
+             },
+                success:function(result)
             {
                
                 $.each(result, (i, val) => {
@@ -402,9 +404,12 @@ $(document).ready(function () {
                 url:window.localStorage.getItem('BaseURLAPI')+"deleteJobsite/"+id,
                 method:"GET",
                // data:x,_token:"{{ csrf_token() }}",
-                headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
+               headers: {
+                // 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                 "Authorization": "Bearer "+localStorage.getItem("APIToken")
+    
+             },
+    
                 success:function(result)
                 {
 

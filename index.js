@@ -11,6 +11,7 @@ const { JSDOM } = jsdom;
 const { window } = new JSDOM('<html></html>');
 var $ = require('jquery')(window);
 require('dotenv').config({path: '.env'});
+const moment = require('moment-timezone');
 
 const mongoose  = require('./dbConnect');
 mongoose.mongoConnect();
@@ -49,6 +50,8 @@ app.use('/', function(req, res) {
 //         }
 //     });})
 
-console.log("Server listening on PORT "+process.env.NODE_PORT+" \n");
+
+
+console.log("Server listening on PORT "+process.env.NODE_PORT+" \n"+moment().tz("America/Los_Angeles").format());
 console.log("Base URL : http://localhost:"+process.env.NODE_PORT+"/api  \n");
 app.listen(process.env.port || process.env.NODE_PORT);

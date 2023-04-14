@@ -94,9 +94,9 @@ function getData()
               console.log("HELLO "+$('#startShiftDate').val());
                 //var ResponseData=[];
               $.ajax({
-                url:window.localStorage.getItem('BaseURLAPI')+"getProjectManagerAllAttedanceData",
+                url:window.localStorage.getItem('BaseURLAPI')+"getAllAttedanceData",
                 method:"POST",
-                data:{date:$('#startShiftDate').val(),selectJobSiteid:window.localStorage.getItem("selectJobSiteid"),prj_id:window.localStorage.getItem('id'),parent_id:window.localStorage.getItem("parent_attedanceID"),status:1},
+                data:{date:$('#startShiftDate').val(),parent_id:window.localStorage.getItem("parent_attedanceID"),selectJobSiteid:window.localStorage.getItem("selectJobSiteid"),status:0},
                 headers: {
                     // 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
                      "Authorization": "Bearer "+localStorage.getItem("APIToken")
@@ -123,47 +123,52 @@ function getData()
                         site_name = val['jobSiteData'][0].site_name;
                         attedance_date = val.shift_start_date;
                         hour_deduct = val.hour_deduct;
+
+                        // dt2 = new Date(moment().format('DD-MM-YYYY')+" "+val.shift_start_time);
+                        // dt1 = new Date(moment().format('DD-MM-YYYY')+" "+val.shift_end_time);
                         
-                         
                         var dateOne = moment(moment().format('YYYY-MM-DD')+" "+val.shift_start_time);
                         var dateTwo = moment(moment().format('YYYY-MM-DD')+" "+val.shift_end_time);
                         
-                      // console.log(dateOne+" "+dateTwo);
-                      var hours = dateTwo.diff(dateOne, 'hours')
-                      var min = dateTwo.diff(dateOne, 'minutes');
-                      var minutes = min-(hours * 60);
-                       var selectHourDeduct = hours+" Hrs. "+minutes+" Min.";
-     
- 
-                       var total = val.hour_deduct;
-             // Getting the hours.
-             var hrs = Math.floor(total / 60);
-             // Getting the minutes.
-             var min = total % 60;
-     
-            
- 
- var startTime = moment(hours+":"+minutes, 'HH:mm');
- var endTime = moment(hrs+":"+min, 'HH:mm');
- 
- // calculate total duration
- var duration = moment.duration(startTime.diff(endTime));
- 
- // duration in hours
- var total_hours = parseInt(duration.asHours());
- 
- // duration in minutes
- var total_minutes = parseInt(duration.asMinutes()) % 60;
- 
- 
-                      items.push({'total_hour_minute':total_hours+" Hrs. "+total_minutes+" Min.", "selectHourDeduct":selectHourDeduct, "ID": val._id,"created_at": created_date_formate,"updated_at": updated_date_formate,"site_name": val['jobSiteData'][0].site_name,"no_of_employee":no_emp,"type": val.type,"employee_name": val['empforemenData'][0].first_name+" "+val['empforemenData'][0].last_name, "shift_start_date": val.shift_start_date, "shift_start_time": moment(val.shift_start_time,'h:mm A').format('HH:mm'), "shift_end_time": moment(val.shift_end_time,'h:mm A').format('HH:mm'), "hour_deduct": hrs +
-                      " Hours  " + min + " Minutes" });
+                       // console.log(dateOne+" "+dateTwo);
+                        var hours = dateTwo.diff(dateOne, 'hours')
+                     var min = dateTwo.diff(dateOne, 'minutes');
+                     var minutes = min-(hours * 60);
+                      var selectHourDeduct = hours+" Hrs. "+minutes+" Min.";
+    
+
+                      var total = val.hour_deduct;
+            // Getting the hours.
+            var hrs = Math.floor(total / 60);
+            // Getting the minutes.
+            var min = total % 60;
+    
+           
+
+var startTime = moment(hours+":"+minutes, 'HH:mm');
+var endTime = moment(hrs+":"+min, 'HH:mm');
+
+// calculate total duration
+var duration = moment.duration(startTime.diff(endTime));
+
+// duration in hours
+var total_hours = parseInt(duration.asHours());
+
+// duration in minutes
+var total_minutes = parseInt(duration.asMinutes()) % 60;
+
+
+var dateString = attedance_date.split('T');
+var dateString_data = moment($.trim(dateString[0])).format("MM-DD-YYYY");
+            items.push({'site_name_data':site_name,'attedance_date_data':dateString_data,'total_hour_minute':total_hours+" Hrs. "+total_minutes+" Min.", "selectHourDeduct":selectHourDeduct,"ID": val._id,"created_at": created_date_formate,"updated_at": updated_date_formate,"site_name": val['jobSiteData'][0].site_name,"no_of_employee":no_emp,"type": val.type,"employee_name": val['empforemenData'][0].first_name+" "+val['empforemenData'][0].last_name, "shift_start_date": val.shift_start_date, "shift_start_time": moment(val.shift_start_time,'H:mm A').format('HH:mm'), "shift_end_time": moment(val.shift_end_time,'h:mm A').format('HH:mm'), "hour_deduct": hrs +
+            " Hours  " + min + " Minutes" });
                   })
+                  
                   var dateString = attedance_date.split('T');
-                   
-                  $('#attedance_date_show').text(moment($.trim(dateString[0])).format("MM-DD-YYYY"));
+                    
+                    $('#attedance_date_show').text(moment($.trim(dateString[0])).format("MM-DD-YYYY"));
                     $('#job_site_show').text(site_name);
-                    //$('#hour_deduct_show').text(hour_deduct);
+                  //  $('#hour_deduct_show').text(hour_deduct);
                     
                  // console.log(items);
                   //return false;
@@ -186,6 +191,37 @@ function getData()
                     groupable: true,
                     dataBound: onDataBound,
                     toolbar: ["excel", "pdf", "search"],
+                    pdf: {  
+                        allPages: true,  
+                        avoidLinks: true,  
+                        paperSize: "A4",  
+                        margin: {  
+                            top: "2cm",  
+                            left: "0.5cm",  
+                            right: "0.5cm",  
+                            bottom: "1cm"  
+                        },  
+                        landscape: true,  
+                        repeatHeaders: true,  
+                        template: $("#attedance_date_show").html(),  
+                        scale: 0.5  
+                    },
+                    pdfExport: function(e) {
+                        var rows = e.sender.table[0].rows;
+    
+                        for (var i = 0; i < rows.length; i++) {
+                            var row = rows[i];
+                            if (!$(row).hasClass("k-selected")) {
+                                $(row).addClass("hiddenRow")
+                            };
+                        };
+                        e.promise
+                            .done(function() {
+                                $(".hiddenRow").each(function() {
+                                    $(this).parents("tr").removeClass("hiddenRow");
+                                });
+                            });
+                    },
                     serverSorting: true,
                     serverFiltering: true,
                     serverPaging: true,  
@@ -195,7 +231,7 @@ function getData()
                         componentType: "classic",
                     },              
                     excel: {
-                        fileName: "View ndance.xlsx",
+                        fileName: "View Attendance.xlsx",
                         filterable: true,
                         allPages: true
                     },
@@ -209,9 +245,21 @@ function getData()
                     //         "class": "checkbox-align",
                     //     }
                     // },
-            
-                    
-                     {
+            {
+                field:"attedance_date_data",
+                        title:"Attedance Date",
+                        hidden: true,
+                        width:150,
+    
+            },
+            {
+                field:"site_name_data",
+                        title:"Site Name",
+                hidden: true,
+                   width:150,
+    
+            },
+                            {
                         field:"employee_name",
                         title:"Employee/Foreman",
                         width:150,
@@ -222,6 +270,7 @@ function getData()
                         title:"No of Worker",
                         width:150,
                     },
+
                       {
                         field: "shift_start_time",
                         title: "Shift Start Time",
@@ -237,7 +286,6 @@ function getData()
                         title:"Shift Hours",
                         width:150,
                     },
-
                     {
                         field:"hour_deduct",
                         title:"Hrs Deduct",
@@ -264,16 +312,30 @@ function getData()
                         width: 180,
             
                     },
-
+            
                     ],
-
                 });
             
                 }  
             });
 
-
+            $("#grid").data("kendoGrid").bind("pdfExport", function (e) {
+                if (!exportFlag) {
+                  e.sender.hideColumn(1);
+                  e.preventDefault();
+                  exportFlag = true;
+        
+                  e.sender.saveAsPDF().then(function(){
+                    e.sender.showColumn(1);
+                    exportFlag = false;
+                  });
+        
+                }
+              });
     }
+
+    
+    
   function onDataBound(e) {
             var grid = this;
             grid.table.find("tr").each(function () {

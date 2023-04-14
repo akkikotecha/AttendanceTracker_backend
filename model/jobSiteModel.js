@@ -29,8 +29,15 @@ let UserSchema = new Schema({
     job_status:
     {
         type:Number,
+    },createdAt:{
+        type: String,
+        timezone: "America/New_York",
+    },
+    updatedAt:{
+        type: String,
+        timezone: "America/New_York",
     }
-  },{ timestamps: true,versionKey: false });
+  },{ timestamps: false,versionKey: false });
   
 
 module.exports.job_site = model("job_site", UserSchema);

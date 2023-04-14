@@ -135,6 +135,12 @@ $('.select_multiple_data').on("select2:unselect", function(e) {
                 url:window.localStorage.getItem('BaseURLAPI')+"getJobSiteReport",
                 method:"POST",
                 data:{date:daterangedata,jobsite:strVal},
+                headers: {
+                    // 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                     "Authorization": "Bearer "+localStorage.getItem("APIToken")
+        
+                 },
+        
                 success:function(result)
                 {
                 //  console.log("HELLO "+result);

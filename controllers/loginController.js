@@ -3,8 +3,10 @@ const mongoose  = require('../dbConnect');
 const User  = require('../model/userModel');
 
 const role_master  = require('../model/rolesModel');
+const moment_tz = require('moment-timezone');
 
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt');
+const jwt = require("jsonwebtoken");
 
 authLogin = async (req, res, next) => {
   try {
@@ -19,6 +21,8 @@ authLogin = async (req, res, next) => {
                   }, 
               },
               {$match: {'email': {$eq:req.body.email}}},
+              {$match: {'status': {$eq:1}}},
+              
               
             ]);
              // console.log("userDetails "+userDetails.replace(/\s/g, ''))
@@ -26,7 +30,7 @@ authLogin = async (req, res, next) => {
             {
               if(userDetails.length === 0)
               {
-                res.status(200).send({status:1,data : "Invalid email or password"});
+                res.status(200).send({status:0,data : "Invalid email or password"});
 
               }else
               {
@@ -36,15 +40,25 @@ authLogin = async (req, res, next) => {
                   let bool = bcrypt.compareSync(req.body.password,userDetails[0].password)
                   if(bool ==false)
                   {
-                    res.status(200).send({status:1,data : "Incorrect Password"});
+                    res.status(200).send({status:0,data : "Incorrect Password"});
      
                   }else
                   {
-                    res.status(200).send({status:1,data : userDetails});
+
+                    const token = jwt.sign({"email":req.body.email},
+                      process.env.JWT_SECRET_KEY,
+                       {
+                         expiresIn: "1m",
+                       }
+                    );
+              
+                    // save user token
+                    //userDetails.token = token;
+                    res.status(200).send({status:1,data : userDetails,token:token});
      
                   }
                 }else{
-                  res.status(200).send({status:1,data : "Incorrect Password"});
+                  res.status(200).send({status:0,data : "Incorrect Password"});
                 }
                 
   

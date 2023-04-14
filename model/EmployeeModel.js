@@ -35,8 +35,15 @@ let UserSchema = new Schema({
     status:{
         type:Number
     },
-
-  },{ timestamps: true,versionKey: false });
+    createdAt:{
+        type: String,
+        timezone: "America/New_York",
+    },
+    updatedAt:{
+        type: String,
+        timezone: "America/New_York",
+    }
+  },{ timestamps: false,versionKey: false });
   
 
 module.exports.EmployeeForeman = model("EmployeeForeman", UserSchema);

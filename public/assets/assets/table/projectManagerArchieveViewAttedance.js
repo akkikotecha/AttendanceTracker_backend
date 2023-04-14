@@ -96,7 +96,7 @@ function getData()
               $.ajax({
                 url:window.localStorage.getItem('BaseURLAPI')+"getProjectManagerAllAttedanceData",
                 method:"POST",
-                data:{date:$('#startShiftDate').val(),selectJobSiteid:window.localStorage.getItem("selectJobSiteid"),prj_id:window.localStorage.getItem('id'),parent_id:window.localStorage.getItem("parent_attedanceID"),status:1},
+                data:{date:$('#startShiftDate').val(),selectJobSiteid:window.localStorage.getItem("selectJobSiteid"),prj_id:window.localStorage.getItem('id'),parent_id:window.localStorage.getItem("parent_attedanceID"),status:0},
                 headers: {
                     // 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
                      "Authorization": "Bearer "+localStorage.getItem("APIToken")
@@ -410,7 +410,7 @@ function getData()
            
             window.localStorage.setItem("JobSiteid",id);
             //console.log(window.localStorage.getItem('baseurlhostname')+"selectAttendanceDetail");
-            window.location.href = window.localStorage.getItem('baseurlhostname')+"selectAttendanceDetail"
+            window.location.href = window.localStorage.getItem('baseurlhostname')+"http://localhost:2000/ViewProjectManagerAttedance"
           //  window.location.reload();
             //$('#selectProjectManager').modal('show');
         })

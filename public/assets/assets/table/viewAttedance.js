@@ -96,10 +96,13 @@ function getData()
               $.ajax({
                 url:window.localStorage.getItem('BaseURLAPI')+"getAllAttedanceData",
                 method:"POST",
-                data:{date:$('#startShiftDate').val(),parent_id:window.localStorage.getItem("parent_attedanceID"),selectJobSiteid:window.localStorage.getItem("selectJobSiteid")},
+                data:{date:$('#startShiftDate').val(),parent_id:window.localStorage.getItem("parent_attedanceID"),selectJobSiteid:window.localStorage.getItem("selectJobSiteid"),status:1},
                 headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
+                    // 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                     "Authorization": "Bearer "+localStorage.getItem("APIToken")
+        
+                 },
+        
             success:function(result)
             {
                 console.log(result);
@@ -114,9 +117,9 @@ function getData()
                         }else{
                             no_emp = val.no_of_employee;
                         }
-                        var updated_date_formate = moment(val.updatedAt).format('MM-DD-YYYY HH:mm');  
+                        var updated_date_formate = val.updatedAt;  
 
-                        var created_date_formate = moment(val.createdAt).format('MM-DD-YYYY HH:mm');  
+                        var created_date_formate = val.createdAt;  
                         site_name = val['jobSiteData'][0].site_name;
                         attedance_date = val.shift_start_date;
                         hour_deduct = val.hour_deduct;
@@ -157,7 +160,7 @@ var total_minutes = parseInt(duration.asMinutes()) % 60;
 
 var dateString = attedance_date.split('T');
 var dateString_data = moment($.trim(dateString[0])).format("MM-DD-YYYY");
-            items.push({'site_name_data':site_name,'attedance_date_data':dateString_data,'total_hour_minute':total_hours+" Hrs. "+total_minutes+" Min.", "selectHourDeduct":selectHourDeduct,"ID": val._id,"created_at": created_date_formate,"updated_at": updated_date_formate,"site_name": val['jobSiteData'][0].site_name,"no_of_employee":no_emp,"type": val.type,"employee_name": val['empforemenData'][0].first_name+" "+val['empforemenData'][0].last_name, "shift_start_date": val.shift_start_date, "shift_start_time": moment(val.shift_start_time,'H:mm A').format('H:mm A'), "shift_end_time": moment(val.shift_end_time,'h:mm A').format('h:mm A'), "hour_deduct": hrs +
+            items.push({'site_name_data':site_name,'attedance_date_data':dateString_data,'total_hour_minute':total_hours+" Hrs. "+total_minutes+" Min.", "selectHourDeduct":selectHourDeduct,"ID": val._id,"created_at": created_date_formate,"updated_at": updated_date_formate,"site_name": val['jobSiteData'][0].site_name,"no_of_employee":no_emp,"type": val.type,"employee_name": val['empforemenData'][0].first_name+" "+val['empforemenData'][0].last_name, "shift_start_date": val.shift_start_date, "shift_start_time": moment(val.shift_start_time,'H:mm A').format('HH:mm'), "shift_end_time": moment(val.shift_end_time,'h:mm A').format('HH:mm'), "hour_deduct": hrs +
             " Hours  " + min + " Minutes" });
                   })
                   
@@ -492,9 +495,12 @@ var dateString_data = moment($.trim(dateString[0])).format("MM-DD-YYYY");
                 url:window.localStorage.getItem('BaseURLAPI')+"deleteJobsite/"+id,
                 method:"GET",
                // data:x,_token:"{{ csrf_token() }}",
-                headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
+               headers: {
+                // 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                 "Authorization": "Bearer "+localStorage.getItem("APIToken")
+    
+             },
+    
                 success:function(result)
                 {
 

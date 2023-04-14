@@ -1,21 +1,27 @@
 const mongoose  = require('../dbConnect');
 
 const JobSite  = require('../model/jobSiteModel');
+const HistoryLog  = require('../model/HistoryModel');
+
 
 var mong = require('mongoose');
 
+const moment_tz = require('moment-timezone');
 
+var moment = require('moment');
 
 addJobSite = async (req, res, next) => {
 
-  //console.log(req.body);
+  //console.log(req.body[5].value);
   //return false;
     try {
-            const job_site = await JobSite.job_site.create({site_name:req.body[0].value,address:req.body[1].value,start_date:req.body[2].value,end_date:req.body[3].value,status:req.body[4].value,project_manager_id:[],job_status:1});
+            const job_site = await JobSite.job_site.create({site_name:req.body[0].value,address:req.body[1].value,start_date:req.body[2].value,end_date:req.body[3].value,status:req.body[4].value,project_manager_id:[],job_status:1,createdAt:moment_tz().tz("America/New_York").format('MM-DD-YYYY HH:mm'),updatedAt:moment_tz().tz("America/New_York").format('MM-DD-YYYY HH:mm')});
+
+            const HistoryLog_data = await HistoryLog.history_log.create({action_by:req.body[5].value,log_activity:'Jobsite ('+req.body[0].value+') Created',create_date:moment_tz().tz("America/New_York").format('MM-DD-YYYY HH:mm'),status:1,createdAt:moment_tz().tz("America/New_York").format('MM-DD-YYYY HH:mm')});
             //const lastid= user._id;
             
-                res.status(200).send({message : "Added"});
-           
+            res.status(200).send({message : "Added"});
+
         }catch (error) {
       return res.status(500).send({status:0,message: error.message});
     }
@@ -27,14 +33,30 @@ addJobSite = async (req, res, next) => {
 deleteJobSite = async (req, res, next) => {
  //  return false; 
   try {
-        try {
+       
 
-          let user = await JobSite.job_site.findByIdAndRemove(req.params.JobSiteId);
-          res.status(200).send({status:1,message : "record Deleted"});
+          //let user = await JobSite.job_site.findByIdAndRemove(req.params.JobSiteId);
 
-        }catch(err) {
-            res.status(500).send({status:0,message : err.message});
-        }
+        
+
+            let updatedata = JobSite.job_site.findOneAndUpdate(
+               { _id: req.params.JobSiteId },
+               {
+                 $set: {
+                  job_status:req.params.status,
+                  updatedAt:moment_tz().tz("America/New_York").format('MM-DD-YYYY HH:mm')
+                 }
+               }
+            ).then(result=>{
+              res.status(200).send({status:1,message : "record Deleted"});
+   
+            })
+
+
+            const HistoryLog_data = await HistoryLog.history_log.create({action_by:req.params.action_by,log_activity:req.params.job_site_name,create_date:moment_tz().tz("America/New_York").format('MM-DD-YYYY HH:mm'),status:1,createdAt:moment_tz().tz("America/New_York").format('MM-DD-YYYY HH:mm')});
+            
+
+
   } catch (error) {
     console.log(mongoose);
     return res.status(500).send({status:0,
@@ -42,10 +64,6 @@ deleteJobSite = async (req, res, next) => {
     });
   }
 }
-
-
-
-
 
 
 getJobSite = async (req, res, next) => {
@@ -66,7 +84,48 @@ getJobSite = async (req, res, next) => {
                   ],
                   as: "User",
                   }, 
-              }
+              },
+              { $sort: {_id: -1} },
+            ]);
+
+            // let JobSiteData = await JobSite.job_site.find();
+             //  console.log(JSON.stringify(JobSiteData));
+            //return false;
+            res.status(200).send(JobSiteData);
+        }catch(err) {
+            res.status(500).send({status:0,message : err.message});
+        }
+  } catch (error) {
+    console.log(mongoose);
+    return res.status(500).send({status:0,
+      message: error.message
+    });
+  }
+}
+
+
+
+
+active_getJobsite = async (req, res, next) => {
+  // console.log(req.body);
+  // return false;
+  
+  try {
+//console.log("HELLO");
+        try {
+            const JobSiteData = await JobSite.job_site.aggregate([
+              {
+                "$lookup":{
+                  from:"admin_porject_managers",
+                  'let': { 'pid': '$project_manager_id' },
+                  'pipeline': [
+                  { '$match': { '$expr': { '$in': ['$_id', '$$pid'] } } }
+                  // Add additional stages here 
+                  ],
+                  as: "User",
+                  }, 
+              },
+              {$match: {'job_status': {$eq:1}}},
             ]);
 
             // let JobSiteData = await JobSite.job_site.find();
@@ -88,12 +147,15 @@ getJobSite = async (req, res, next) => {
 
 AssignProjectManager = async (req, res, next) => {
 
+//  console.log(req.body);
+  //return false;
   var collection = []
 
   //let selectPm = array();
-   for(var property in req.body) {
+   for(var property of req.body[3].value) {
+    //console.log("HELLO "+property);
     //let data = req.body[property].value;
-    collection.push(mong.Types.ObjectId(req.body[property].value))
+    collection.push(mong.Types.ObjectId(property.trim()))
    }
   // console.log("HELLO "+collection+ "JOBSITE ID: "+req.params.ID);
 
@@ -104,19 +166,24 @@ AssignProjectManager = async (req, res, next) => {
         try {
 
          let updatedata = JobSite.job_site.findOneAndUpdate(
-            { _id: req.params.ID },
+            { _id: req.params.id },
             {
               $set: {
-                project_manager_id:collection
+                project_manager_id:collection,
+                updatedAt:moment_tz().tz("America/New_York").format('MM-DD-YYYY HH:mm')
               }
             }
          ).then(result=>{
+
+            
+          const HistoryLog_data = HistoryLog.history_log.create({action_by:req.body[2].value,log_activity:req.body[0].value,create_date:moment_tz().tz("America/New_York").format('MM-DD-YYYY HH:mm'),status:1,createdAt:moment_tz().tz("America/New_York").format('MM-DD-YYYY HH:mm')});
           res.status(200).json({status:1,message : "updated"});
 
          }).catch(err=>{
           res.status(500).send({status:0,message : err.message});
       
          })
+
 
          return updatedata;
 
@@ -141,7 +208,8 @@ EditJobSite = async (req, res, next) => {
    try {
  //console.log("HELLO");
          try {
- 
+
+         
           let updatedata = JobSite.job_site.findOneAndUpdate(
              { _id: req.body[0].value },
              {
@@ -151,9 +219,14 @@ EditJobSite = async (req, res, next) => {
                  start_date:req.body[3].value,
                  end_date:req.body[4].value,
                  status:req.body[5].value,
+                 updatedAt:moment_tz().tz("America/New_York").format('MM-DD-YYYY HH:mm')
                }
              }
           ).then(result=>{
+
+            const HistoryLog_data = HistoryLog.history_log.create({action_by:req.body[6].value,log_activity:'Jobsite ('+req.body[1].value+') Updated',create_date:moment_tz().tz("America/New_York").format('MM-DD-YYYY HH:mm'),status:1,createdAt:moment_tz().tz("America/New_York").format('MM-DD-YYYY HH:mm')});
+ 
+
            res.status(200).json({status:1,message : "updated"});
  
           }).catch(err=>{
@@ -196,6 +269,7 @@ getJobSiteAssign = async (req, res, next) => {
                   },
                 
                 },
+                { $sort: {_id: -1} },
           
                ])
              res.status(200).send(JobSiteData);
@@ -239,7 +313,8 @@ const Auth = {
   AssignProjectManager,
   getJobSiteAssign,
   getJobSiteId,
-  EditJobSite
+  EditJobSite,
+  active_getJobsite
 };
 
 module.exports = Auth;

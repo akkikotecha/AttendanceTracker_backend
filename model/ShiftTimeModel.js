@@ -28,7 +28,15 @@ let ShiftTimeSchema = new Schema({
         trim: true,
 
     },
-  },{ timestamps: true,versionKey: false });
+    createdAt:{
+        type: String,
+        timezone: "America/New_York",
+    },
+    updatedAt:{
+        type: String,
+        timezone: "America/New_York",
+    }
+  },{ timestamps: false,versionKey: false });
   
 
 module.exports.shift_time = model("shift_time", ShiftTimeSchema);

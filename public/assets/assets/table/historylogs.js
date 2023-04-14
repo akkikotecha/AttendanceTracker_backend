@@ -47,13 +47,13 @@ $(function() {
     };
 
     $('#mini-bar-chart1').sparkline(values2[0], paramsBar);
-    paramsBar.barColor = '#6c757d';
+        paramsBar.barColor = '#6c757d';
     $('#mini-bar-chart2').sparkline(values2[1], paramsBar);
-    paramsBar.barColor = '#6c757d';
+        paramsBar.barColor = '#6c757d';
     $('#mini-bar-chart3').sparkline(values2[2], paramsBar);
-    paramsBar.barColor = '#6c757d';
+        paramsBar.barColor = '#6c757d';
     $('#mini-bar-chart4').sparkline(values2[3], paramsBar);
-    paramsBar.barColor = '#6c757d';
+        paramsBar.barColor = '#6c757d';
 
 });
 
@@ -65,7 +65,7 @@ getData();
 var date = new Date();
 $('.date_picker').datepicker({
         autoclose: true,
-        format: 'dd-mm-yyyy',
+        format: 'mm-dd-yyyy',
         viewMode: 'date',
         minViewMode: 'date',
         
@@ -83,99 +83,69 @@ function changeDate()
 
 
 $('#selectJobsite').on('change',function(){
-    console.log('HELLO ');
+   // console.log('HELLO ');
    
     items = [];
     getData();
 })
+
+var scrollOffset = {
+    left: 0,
+    top: 0
+};
+
+// Save the scroll position before the new data is rendered.
+function onGridDataBinding (e) {
+    var container = e.sender.wrapper.children(".k-grid-content"); // or ".k-virtual-scrollable-wrap"
+    scrollOffset.left = container.scrollLeft();
+    scrollOffset.top = container.scrollTop(); // use only if virtual scrolling is disabled
+}
+
+// Restore the scroll position after the new data is rendered.
+function onGridDataBound (e) {
+    var container = e.sender.wrapper.children(".k-grid-content"); // or ".k-virtual-scrollable-wrap"
+    container.scrollLeft(scrollOffset.left);
+    container.scrollTop(scrollOffset.top); // use only if virtual scrolling is disabled
+}
+
+
+
 function getData()
 {
-
-              console.log("HELLO "+$('#startShiftDate').val());
+           console.log("HELLO "+$('#startShiftDate').val());
                 //var ResponseData=[];
               $.ajax({
-                url:window.localStorage.getItem('BaseURLAPI')+"getProjectManagerAllAttedanceData",
-                method:"POST",
-                data:{date:$('#startShiftDate').val(),selectJobSiteid:window.localStorage.getItem("selectJobSiteid"),prj_id:window.localStorage.getItem('id'),parent_id:window.localStorage.getItem("parent_attedanceID"),status:1},
+                url:window.localStorage.getItem('BaseURLAPI')+"getHistoryLog",
+                method:"GET",
+                data:{date:$('#startShiftDate').val(),jobsite:$('#selectJobsite').val()},
                 headers: {
                     // 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
                      "Authorization": "Bearer "+localStorage.getItem("APIToken")
         
                  },
-        
-            success:function(result)
+                    success:function(result)
             {
-                console.log(result);
+               // console.log(result);
                var no_emp;
-
-               var attedance_date,site_name,hour_deduct;
                 $.each(result, (i, val) => {
+                  
 
-                        if(val.no_of_employee == "null" || val.no_of_employee =="")
-                        {
-                            no_emp = "";
-                        }else{
-                            no_emp = val.no_of_employee;
-                        }
-                        var updated_date_formate = val.updatedAt;  
-
-                        var created_date_formate = val.createdAt;  
-                        site_name = val['jobSiteData'][0].site_name;
-                        attedance_date = val.shift_start_date;
-                        hour_deduct = val.hour_deduct;
-                        
-                         
-                        var dateOne = moment(moment().format('YYYY-MM-DD')+" "+val.shift_start_time);
-                        var dateTwo = moment(moment().format('YYYY-MM-DD')+" "+val.shift_end_time);
-                        
-                      // console.log(dateOne+" "+dateTwo);
-                      var hours = dateTwo.diff(dateOne, 'hours')
-                      var min = dateTwo.diff(dateOne, 'minutes');
-                      var minutes = min-(hours * 60);
-                       var selectHourDeduct = hours+" Hrs. "+minutes+" Min.";
-     
- 
-                       var total = val.hour_deduct;
-             // Getting the hours.
-             var hrs = Math.floor(total / 60);
-             // Getting the minutes.
-             var min = total % 60;
-     
-            
- 
- var startTime = moment(hours+":"+minutes, 'HH:mm');
- var endTime = moment(hrs+":"+min, 'HH:mm');
- 
- // calculate total duration
- var duration = moment.duration(startTime.diff(endTime));
- 
- // duration in hours
- var total_hours = parseInt(duration.asHours());
- 
- // duration in minutes
- var total_minutes = parseInt(duration.asMinutes()) % 60;
- 
- 
-                      items.push({'total_hour_minute':total_hours+" Hrs. "+total_minutes+" Min.", "selectHourDeduct":selectHourDeduct, "ID": val._id,"created_at": created_date_formate,"updated_at": updated_date_formate,"site_name": val['jobSiteData'][0].site_name,"no_of_employee":no_emp,"type": val.type,"employee_name": val['empforemenData'][0].first_name+" "+val['empforemenData'][0].last_name, "shift_start_date": val.shift_start_date, "shift_start_time": moment(val.shift_start_time,'h:mm A').format('HH:mm'), "shift_end_time": moment(val.shift_end_time,'h:mm A').format('HH:mm'), "hour_deduct": hrs +
-                      " Hours  " + min + " Minutes" });
+//                    console.log("val : "+);
+                    //console.log("document_upload "+document_upload);
+                  
+                     items.push({"log_activity":val.log_activity,"create_date":val.create_date,"action": val.Assign_data[0].first_name+" "+val.Assign_data[0].last_name});
                   })
-                  var dateString = attedance_date.split('T');
-                   
-                  $('#attedance_date_show').text(moment($.trim(dateString[0])).format("MM-DD-YYYY"));
-                    $('#job_site_show').text(site_name);
-                    //$('#hour_deduct_show').text(hour_deduct);
-                    
-                 // console.log(items);
-                  //return false;
-                  $("#grid").kendoGrid({
+
+                  
+                  window.grid =  $("#grid").kendoGrid({
                     dataSource: items,
                     height: 680,
-            //                    editable: "incell",
+                    dataBinding: onGridDataBinding,
+                    dataBound: onGridDataBound,
                     pageable: {
                         refresh: true,
                         pageSizes: true,
                         pageSize:10,
-
                         buttonCount: 5
                       },
                     sortable: true,
@@ -184,8 +154,21 @@ function getData()
                     reorderable: true,
                     toolbarColumnMenu: true,
                     groupable: true,
-                    dataBound: onDataBound,
                     toolbar: ["excel", "pdf", "search"],
+                    pdf: {  
+                        allPages: true,  
+                        avoidLinks: true,  
+                        paperSize: "A4",  
+                        margin: {  
+                            top: "2cm",  
+                            left: "0.5cm",  
+                            right: "0.5cm",  
+                            bottom: "1cm"  
+                        },  
+                        landscape: true,  
+                        repeatHeaders: true,  
+                        scale: 0.5  
+                    },
                     serverSorting: true,
                     serverFiltering: true,
                     serverPaging: true,  
@@ -195,78 +178,31 @@ function getData()
                         componentType: "classic",
                     },              
                     excel: {
-                        fileName: "View ndance.xlsx",
+                        fileName: "History Logs.xlsx",
                         filterable: true,
                         allPages: true
                     },
                     columns: [
-                    //     {
-                    //     selectable: true,
-                    //     width: 75,                    //     attributes: {
-                    //         "class": "checkbox-align",
-                    //     },
-                    //     headerAttributes: {
-                    //         "class": "checkbox-align",
-                    //     }
-                    // },
-            
                     
-                     {
-                        field:"employee_name",
-                        title:"Employee/Foreman",
-                        width:150,
-   
-                    },
                     {
-                        field:"no_of_employee",
-                        title:"No of Worker",
-                        width:150,
-                    },
-                      {
-                        field: "shift_start_time",
-                        title: "Shift Start Time",
-                        format: "{0:c}",
-                        width: 130
-                    }, {
-                        field: "shift_end_time",
-                        title: "Shift End Time",
-                        width: 130,
-                    },
-                    {
-                        field:"selectHourDeduct",
-                        title:"Shift Hours",
-                        width:150,
+                        field: "create_date",
+                        title: "Date",
+                        width: 90
                     },
 
                     {
-                        field:"hour_deduct",
-                        title:"Hrs Deduct",
-                        width:120,
+                        field:"log_activity",
+                        title:"Log Activity",
+                        width:200
                     },
                     {
-                        field:"total_hour_minute",
-                        title:"Total Hours",
-                        width:120,
-                    },
-                    {
-                        field: "created_at",
-                        title: "Created Date",
-                        lockable: true,
-            
-                        width: 180,
-            
-                    },
-                    {
-                        field: "updated_at",
-                        title: "Updated Date",
-                        lockable: true,
-            
-                        width: 180,
-            
+                        field:"action",
+                        title:"Action By",
+                        width:150
+
                     },
 
                     ],
-
                 });
             
                 }  
@@ -403,63 +339,133 @@ function getData()
 
 
 
-        
-        $('#grid').on("click","button.AttedanceRedirect",function(){
-            //console.log("EJJJEE");
-            var id=$(this).attr('data-val');
-           
-            window.localStorage.setItem("JobSiteid",id);
-            //console.log(window.localStorage.getItem('baseurlhostname')+"selectAttendanceDetail");
-            window.location.href = window.localStorage.getItem('baseurlhostname')+"selectAttendanceDetail"
-          //  window.location.reload();
-            //$('#selectProjectManager').modal('show');
-        })
 
-
-        $('#grid').on("click","button.AssignData",function(){
-            //console.log("EJJJEE");
-            var id=$(this).attr('data-val');
-           
-
-            window.localStorage.setItem("jobSiteSelectId",id)
-            $('#selectProjectManager').modal('show');
-        })
-
-        $("#grid").on("click", "button.removeData", function() {
-            var id=$(this).attr('data-val');
-           
-           // console.log(window.localStorage.getItem('BaseURLAPI')+"deleteProjectManager/"+id);
-            $.ajax({
-                url:window.localStorage.getItem('BaseURLAPI')+"deleteJobsite/"+id,
+        getData_new();
+function getData_new()
+{
+           console.log("HELLO "+$('#startShiftDate').val());
+                //var ResponseData=[];
+              $.ajax({
+                url:window.localStorage.getItem('BaseURLAPI')+"getHistoryLog",
                 method:"GET",
-               // data:x,_token:"{{ csrf_token() }}",
-               headers: {
-                // 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-                 "Authorization": "Bearer "+localStorage.getItem("APIToken")
-    
-             },
-    
-                success:function(result)
-                {
+                data:{date:$('#startShiftDate').val(),jobsite:$('#selectJobsite').val()},
+                headers: {
+                    // 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                     "Authorization": "Bearer "+localStorage.getItem("APIToken")
+        
+                 },
+                    success:function(result)
+            {
+               // console.log(result);
+               var no_emp;
+                $.each(result, (i, val) => {
+                  
 
-                        window.location.reload();
-                }
+//                    console.log("val : "+);
+                    //console.log("document_upload "+document_upload);
+                  
+                     items.push({"log_activity":val.log_activity,"create_date":val.create_date,"action": val.Assign_data[0].first_name+" "+val.Assign_data[0].last_name});
+                  })
+
+                  
+                  window.grid =  $("#grid_new").kendoGrid({
+                    dataSource: items,
+                    //height: 680,
+                    dataBinding: onGridDataBinding,
+                    dataBound: onGridDataBound,
+                    pageable: {
+                        refresh: true,
+                        pageSizes: true,
+                        pageSize:10,
+                        buttonCount: 5
+                      },
+                    sortable: true,
+                    navigatable: true,
+                    resizable: true,
+                    reorderable: true,
+                    toolbarColumnMenu: true,
+                    groupable: true,
+                    toolbar: ["excel", "pdf", "search"],
+                    pdf: {  
+                        allPages: true,  
+                        avoidLinks: true,  
+                        paperSize: "A4",  
+                        margin: {  
+                            top: "2cm",  
+                            left: "0.5cm",  
+                            right: "0.5cm",  
+                            bottom: "1cm"  
+                        },  
+                        landscape: true,  
+                        repeatHeaders: true,  
+                        scale: 0.5  
+                    },
+                    serverSorting: true,
+                    serverFiltering: true,
+                    serverPaging: true,  
+                    sortable: true,
+                    filterable: true,
+                    columnMenu: {
+                        componentType: "classic",
+                    },              
+                    excel: {
+                        fileName: "History Logs.xlsx",
+                        filterable: true,
+                        allPages: true
+                    },
+                    columns: [
+                    
+                    {
+                        field: "create_date",
+                        title: "Date",
+                        width: 90
+                    },
+
+                    {
+                        field:"log_activity",
+                        title:"Log Activity",
+                        width:200
+                    },
+                    {
+                        field:"action",
+                        title:"Action By",
+                        width:150
+
+                    },
+
+                    ],
+                });
+            
+                }  
             });
 
-//                    console.log("HELLLLOO O "+$(this).attr('data-val'));
-          });
-    
 
-          $("#grid").on("click", "button.edit_data", function() {
-          //console.log("HELLO");
-          $('#site_name').val($(this).attr('data-sitename'));
-          $('#address').val($(this).attr('data-address'));
-          $('#start_date').val($(this).attr('data-startDate'));
-          $('#end_date').val($(this).attr('data-endDate'));
-          $('#status').val($(this).attr('data-status'));
-          $('#edit_id').val($(this).attr('data-val'));
-          
+    }
 
-          $('#editJobSiteData').modal('show');
-        })
+
+        
+
+
+
+
+
+
+
+
+
+function enforceMinMax(el) {
+    if (el.value != "") {
+      if (parseInt(el.value) < parseInt(el.min)) {
+        el.value = el.min;
+      }
+      if (parseInt(el.value) > parseInt(el.max)) {
+        el.value = el.max;
+      }
+    }
+  }
+
+
+  
+
+
           

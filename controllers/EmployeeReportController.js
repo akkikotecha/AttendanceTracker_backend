@@ -3,6 +3,7 @@ const mong = require("mongoose");
 
 const AttedanceModel = require("../model/AttedanceModel");
 var moment = require('moment');
+const moment_tz = require('moment-timezone');
 
 getEmployeeReport = async (req, res, next) => {
 
@@ -34,6 +35,9 @@ getEmployeeReport = async (req, res, next) => {
             as: "empforemenData",
           },
         },
+        //{$match: {"jobSiteData.job_status": 1}},
+        {$match: {"status": 1}},
+
         {$match: {"employee_foreman_id": {$in :newData.map((listData)=>{
           return mong.Types.ObjectId(listData);
         })}}},
@@ -73,6 +77,9 @@ getEmployeeReport = async (req, res, next) => {
             as: "empforemenData",
           },
         },
+        //{$match: {"jobSiteData.job_status": 1}},
+        {$match: {"status": 1}},
+
        {$match: {"employee_foreman_id": {$in :newData.map((listData)=>{
           return mong.Types.ObjectId(listData);
         })}}},
@@ -109,6 +116,9 @@ getEmployeeReport = async (req, res, next) => {
             as: "empforemenData",
           },
         },
+        {$match: {"status": 1}},
+
+        //{$match: {"jobSiteData.job_status": 1}},
         /*{$match: {"employee_foreman_id": {$in :newData.map((listData)=>{
           return mong.Types.ObjectId(listData);
         })}}},*/
@@ -141,6 +151,9 @@ getEmployeeReport = async (req, res, next) => {
             as: "empforemenData",
           },
         },
+        {$match: {"status": 1}},
+
+        //{$match: {"jobSiteData.job_status": 1}},
         { $match: { shift_start_date: { $gte: new Date(moment(moment(mydate[0], 'MM/DD/YYYY')).format('YYYY-MM-DD')),  $lte: new Date(moment(moment(mydate[1], 'MM/DD/YYYY')).format('YYYY-MM-DD'))  } } }, //01/04/2023  >        12/15/2022
             
         
@@ -171,7 +184,9 @@ getEmployeeReport = async (req, res, next) => {
             as: "empforemenData",
           },
         },
-        
+        {$match: {"status": 1}},
+
+        //{$match: {"jobSiteData.job_status": 1}},
         { $sort: { _id: -1 } },
       ]);
       //console.log(AttedanceData);

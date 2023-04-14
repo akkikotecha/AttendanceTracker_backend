@@ -124,17 +124,21 @@ $(document).ready(function () {
                         }
                     }
                 });
+               // console.log("Bearer "+localStorage.getItem("APIToken"));
               //  console.log("HELLO "+JSON.stringify(dataSource));
               var items = [];
+              
                 //var ResponseData=[];
               $.ajax({
                 url:window.localStorage.getItem('BaseURLAPI')+"getJobsite",
                 method:"GET",
                // data:x,_token:"{{ csrf_token() }}",
-                headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            success:function(result)
+               headers: {
+                // 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                 "Authorization": "Bearer "+localStorage.getItem("APIToken")
+    
+             },
+                success:function(result)
             {
                var concate = '';
                 $.each(result, (i, val) => {
@@ -145,22 +149,27 @@ $(document).ready(function () {
                     // })
                     var startDate = new Date(val.start_date);
                     var startedDate = [startDate.getMonth() + 1, startDate.getDate(), startDate.getFullYear()].join('-');
+                   
                    // var FormatestartedDate = [startDate.getFullYear(), startDate.getMonth() + 1, startDate.getDate()].join('-');
 
                     var FormatestartedDate = moment(val.start_date).format('YYYY-MM-DD');  
-
+                    var FormatestartedDate_new = moment(val.start_date).format('MM-DD-YYYY');  
+                    var FormateendedDate_new_end = moment(val.end_date).format('MM-DD-YYYY');
 
                     if(val.end_date == "" || val.end_date == null || val.end_date == undefined)
                     {
                   
                         var endedDate = "";
                         var FormateendedDate = "";
+                         var FormateendedDate_new_end = "";
+
                     }else
                     {
                         var endDate = new Date(val.end_date);
                         var endedDate = [endDate.getMonth() + 1, endDate.getDate(), endDate.getFullYear()].join('-');
                         
                         var FormateendedDate = moment(val.end_date).format('YYYY-MM-DD');  
+ var FormateendedDate_new_end = moment(val.end_date).format('MM-DD-YYYY');
 
                         //var FormateendedDate = [endDate.getFullYear(), endDate.getMonth() + 1, endDate.getDate()].join('-');
 
@@ -170,7 +179,7 @@ $(document).ready(function () {
                     var data  = JSON.stringify(val.User);
                    // console.log("data : "+data)
 
-                      items.push({ "con_data":data,"concate":val.User,"ID": val._id,"site_name": val.site_name, "address": val.address, "start_date": startedDate, "end_date": endedDate, "status": val.status,'StartDate':FormatestartedDate,'EndDate':FormateendedDate });
+                      items.push({ "con_data":data,"concate":val.User,"ID": val._id,"site_name": val.site_name, "address": val.address, "start_date": FormatestartedDate_new, "end_date": endedDate, "status": val.status,'StartDate':FormatestartedDate,'EndDate':FormateendedDate,'FormateendedDate_new_end':FormateendedDate_new_end,"job_status":val.job_status });
                   })
 
 
@@ -249,7 +258,7 @@ $(document).ready(function () {
 //                        editor: clientCategoryEditor,
                         width: 125
                     }, {
-                        field: "end_date",
+                        field: "FormateendedDate_new_end",
                         title: "End Date",
                   //      editable: returnFalse,
                         width: 140
@@ -259,27 +268,15 @@ $(document).ready(function () {
                        // editor: clientCountryEditor,
                         width: 120
                     },
-/*                            {        
-                        title: "Action",
-//                        template: "<button class='btn btn-primary AttedanceRedirect' data-val=#: ID # title='' >Attedance</button><button class='btn btn-warning ml-2 text-white' data-val=#: ID # title='' ><i class='fa fa-eye'></i></button>",
-            
-                        template: "<button class='btn btn-warning ml-2 text-white' data-val=#: ID # title='' ><i class='fa fa-eye'></i></button>",
-                        width: 220
-                       // field: "ID",
-                       
-                    }, */
+
                     {     
                                        
-                        template: "<button class='btn btn-primary  edit_data' data-id='#:ID#' data-siteName='#:site_name#' data-address='#:address#' data-startDate='#:StartDate#' data-endDate='#:EndDate#'  data-status='#:status#' data-val='#: ID #' title='Edit' ><i class='fa fa-edit text-white'></i></button><button class='btn btn-warning removeData ml-2' data-val=#: ID # title='Delete' ><i class='fa fa-trash text-white'></i></button>",
-                        width: 140
+                        template: "<button class='btn btn-primary  edit_data' data-id='#:ID#' data-siteName='#:site_name#' data-address='#:address#' data-startDate='#:StartDate#' data-endDate='#:FormateendedDate_new_end#'  data-status='#:status#' data-val='#: ID #' title='Edit' ><i class='fa fa-edit text-white'></i></button>#if(job_status == '0') {# <button class='btn removeData text-white' data-val=#: ID #  title='Delete' style='background-color:rgb(221, 51, 51)!important' data-status = '1' data-site_name='#:site_name# Activated' >Deactive</button>  #}else{# <button class='btn btn-warning removeData text-white' data-site_name='#:site_name# Deactivated' data-val=#: ID #  title='Delete' data-status = '0'>Active</button> #} #",
+                        width: 180
                        // field: "ID",
                        
                     },],
                 });
-                //ResponseData = items;
-                //console.log("HELO "+ResponseData);
-        //        console.log("Item "+items);
-
             }
         });   
 
@@ -441,8 +438,21 @@ $(document).ready(function () {
 
         $("#grid").on("click", "button.removeData", function() {
             var id=$(this).attr('data-val');
+            var status=$(this).attr('data-status');
+            var job_site_name = $(this).attr('data-site_name');
+            if(status == 0)
+            {
+                var title= 'Do you want to Deactive this job site?';
+                var New_title = 'Job site Deactivated Successfully...';
+                
+            }else
+            {
+                var title= 'Do you want to Active this job site?';
+                var New_title = 'Job site Activated Successfully...';
+                
+            }
             Swal.fire({
-                title: 'Do you want to delete this job site?',
+                title: title,
                 text: "",
                 icon: 'warning',
                 showCancelButton: true,
@@ -454,16 +464,16 @@ $(document).ready(function () {
               
            // console.log(window.localStorage.getItem('BaseURLAPI')+"deleteProjectManager/"+id);
             $.ajax({
-                url:window.localStorage.getItem('BaseURLAPI')+"deleteJobsite/"+id,
+                url:window.localStorage.getItem('BaseURLAPI')+"deleteJobsite/"+id+"/"+status+"/"+job_site_name+"/"+window.localStorage.getItem('id'),
                 method:"GET",
-               // data:x,_token:"{{ csrf_token() }}",
                 headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                "Authorization": "Bearer "+localStorage.getItem("APIToken")
+//                Authorization: $`Bearer ${localStorage.getItem("APIToken")}`
                 },
                 success:function(result)
                 {
                     Swal.fire({
-                        title: 'Job Site Deleted Successfully...',
+                        title: New_title,
                         text: '',
                         icon: 'success',
                         confirmButtonText: 'ok',
@@ -545,9 +555,12 @@ $(document).ready(function () {
                 url:window.localStorage.getItem('BaseURLAPI')+"getProjectManager",
                 method:"GET",
                // data:x,_token:"{{ csrf_token() }}",
-                headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
+               headers: {
+                // 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                 "Authorization": "Bearer "+localStorage.getItem("APIToken")
+    
+             },
+    
             success:function(result)
             {
                // console.log

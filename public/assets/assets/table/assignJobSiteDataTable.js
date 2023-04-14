@@ -131,9 +131,12 @@ $(document).ready(function () {
                 url:window.localStorage.getItem('BaseURLAPI')+"getJobSiteAssign/"+window.localStorage.getItem('id'),
                 method:"GET",
                // data:x,_token:"{{ csrf_token() }}",
-                headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
+               headers: {
+                // 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                 "Authorization": "Bearer "+localStorage.getItem("APIToken")
+    
+             },
+    
             success:function(result)
             {
                console.log("RESULT "+result)
@@ -390,9 +393,12 @@ console.log("HELLOE");
                 url:window.localStorage.getItem('BaseURLAPI')+"deleteJobsite/"+id,
                 method:"GET",
                // data:x,_token:"{{ csrf_token() }}",
-                headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
+               headers: {
+                // 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                 "Authorization": "Bearer "+localStorage.getItem("APIToken")
+    
+             },
+    
             success:function(result)
             {
 

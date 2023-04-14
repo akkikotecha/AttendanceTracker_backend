@@ -129,13 +129,15 @@ $(document).ready(function () {
               var items = [];
                 //var ResponseData=[];
               $.ajax({
-                url:window.localStorage.getItem('BaseURLAPI')+"getEmployeeForeman",
+                url:window.localStorage.getItem('BaseURLAPI')+"getActiveEmployeeForeman",
                 method:"GET",
                // data:x,_token:"{{ csrf_token() }}",
-                headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            success:function(result)
+               headers: {
+                // 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                 "Authorization": "Bearer "+localStorage.getItem("APIToken")
+    
+             },
+                success:function(result)
             {
                
                 $.each(result, (i, val) => {
@@ -151,7 +153,7 @@ $(document).ready(function () {
                                         pageable: {
                                             refresh: true,
                                             pageSizes: true,
-                                            pageSize:10,
+                                            pageSize:20,
 
                                             buttonCount: 5
 
@@ -483,6 +485,12 @@ $('#document_upload').change(function(e) {
         type: "POST",
         contentType: false,
         processData: false,
+        headers: {
+            // 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+             "Authorization": "Bearer "+localStorage.getItem("APIToken")
+
+         },
+
         success: function(data) {
           console.log(data.image_url);
           image = data.image_url;
@@ -582,6 +590,10 @@ console.log("IMAHE " +image);
             
             xdata.push({name:"values_array",value:jsonData});
             xdata.push({ name: "jobSiteId", value: window.localStorage.getItem("JobSiteid") });
+            xdata.push({ name: "action_by", value: window.localStorage.getItem("id") });
+            
+            xdata.push({ name: "get_jobsite_data_name", value: $('#get_jobsite_data_name').val() });
+            
             xdata.push({name:"array_data",value:dataForeman});
             
             //console.log(xdata);
@@ -591,8 +603,11 @@ console.log("IMAHE " +image);
                 method:"POST",
                 data:xdata,dataArr:values_array,
                 headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
+                    // 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                     "Authorization": "Bearer "+localStorage.getItem("APIToken")
+        
+                 },
+        
                     success:function(result)
                     {
                         //console.log(result.message);
@@ -896,10 +911,12 @@ var categories = [{
                 url:window.localStorage.getItem('BaseURLAPI')+"deleteEmployee/"+id,
                 method:"GET",
                // data:x,_token:"{{ csrf_token() }}",
-                headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            success:function(result)
+               headers: {
+                // 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                 "Authorization": "Bearer "+localStorage.getItem("APIToken")
+    
+             },
+                success:function(result)
             {
                 window.location.reload();
             }
@@ -927,10 +944,12 @@ var categories = [{
                 url:window.localStorage.getItem('BaseURLAPI')+"getProjectManager",
                 method:"GET",
                // data:x,_token:"{{ csrf_token() }}",
-                headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            success:function(result)
+               headers: {
+                // 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                 "Authorization": "Bearer "+localStorage.getItem("APIToken")
+    
+             },
+                success:function(result)
             {
                // console.log
                var concate = '';
@@ -944,7 +963,7 @@ var categories = [{
 // console.log("HELLO "+JSON.stringify(items))
 ;                  $("#confirmAttedanceData").kendoGrid({
                     dataSource: items,
-                    height: 680,
+                    //height: 680,
 //                  editable: "incell",
                     pageable: {
                         refresh: true,
@@ -988,7 +1007,6 @@ var categories = [{
                         title: "Full Name",
                         width: 150,
                     },
-
                     {
                         field: "type",
                         title: "Type",
@@ -998,16 +1016,16 @@ var categories = [{
                     },
                     {
                         field: "type",
-                        title: "Start TIme",
-                        template: '<div class="form-group "><div class="input-group " ><input type="time" style="background-color:white"  class="form-control  shiftdateclass" data-id="#:id#" style="background-color: transparent!important;"  id="shift_start_time_#:id#" data-type="#:type#" name="startShiftTime" placeholder="Shift Start" value="#:start_time#"> </div><p class="text-danger mb-0 text-left f-12" id="error-start_time"></p></div>',
+                        title: "Start Time",
+                        template: '<div class="form-group"><label>Start Time<i class="text-red">*</i></label><div class="input-group  "><input type="text" style="background-color:white"  class="form-control id_3 shiftdateclass" data-id="#:id#" style="background-color: transparent!important;"  id="shift_start_time_#:id#" data-type="#:type#" name="startShiftTime" placeholder="Shift Start" value="#:start_time#"><span class="input-group-addon input_new_group"><i class="fa fa-clock-o"></i></span> </div></div>',
                         width: 150,
 
                     },
                     
                     {
                         field: "type",
-                        title: "End TIme",
-                        template: '<div class="form-group "><div class="input-group " ><input type="time"  style="background-color:white" class="form-control " style="background-color: transparent!important;"  id="shift_end_time_#:id#" name="startShiftTime" placeholder="Shift Start" value="#:end_time#"> </div><p class="text-danger mb-0 text-left f-12" id="error-start_time"></p></div>',
+                        title: "End Time",
+                        template: '<div class="form-group" ><label>Start Time<i class="text-red">*</i></label><div class="input-group  "><input type="text"  style="background-color:white" class="form-control id_3" style="background-color: transparent!important;"  id="shift_end_time_#:id#" name="startShiftTime" placeholder="Shift Start" value="#:end_time#"><span class="input-group-addon input_new_group"><i class="fa fa-clock-o"></i></span> </div></div>',
                         width: 150,
 
                     },

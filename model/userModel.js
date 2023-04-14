@@ -35,11 +35,23 @@ let UserSchema = new Schema({
     },
     role_id : {
         type: Schema.Types.ObjectId, ref: "role_master"      //  required : true
+    },
+    status:
+    {
+        type:Number,
+    },
+    createdAt:{
+        type: String,
+        timezone: "America/New_York",
+    },
+    updatedAt:{
+        type: String,
+        timezone: "America/New_York",
     }    //    ,
     // roles:[{
     //     type: Schema.Types.ObjectId, ref: "user_role"
     //  }]
-  },{ timestamps: true,versionKey: false });
+  },{ timestamps: false,versionKey: false });
   
 /*
   let UserRole = new Schema({

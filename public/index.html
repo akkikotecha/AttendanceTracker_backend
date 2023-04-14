@@ -12,7 +12,10 @@
 <base href="/">
 <!-- Core css -->
 <link rel="stylesheet" href="../assets/assets/css/main.css" loading="lazy">
-<link rel="stylesheet" href="../assets/assets/css/theme1.css" loading="lazy">
+
+<!-- <link rel="stylesheet" href="../assets/assets/css/theme1.css" loading="lazy"/> -->
+
+<link rel="stylesheet" href="../assets/assets/css/theme4.css" loading="lazy">
 
 <link rel="stylesheet" href="../styles.css" loading="lazy">
 <!-- Plugins css -->
@@ -21,13 +24,21 @@
 <link rel="stylesheet" href="../assets/assets/plugins/datatable/fixedeader/dataTables.fixedheader.bootstrap4.min.css">
 <link rel="stylesheet" href="../assets/assets/css/sweetalert.css">
 <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2022.3.1109/styles/kendo.default-ocean-blue.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.css">
 <link href="../assets/assets/js/form/date_picker.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
+
+
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.10/select2-bootstrap.min.css" integrity="sha512-kq3FES+RuuGoBW3a9R2ELYKRywUEQv0wvPTItv3DSGqjpbNtGWVdvT8qwdKkqvPzT93jp8tSF4+oN4IeTEIlQA==" crossorigin="anonymous" referrerpolicy="no-referrer">
 <!-- Bootstrap Core and vandor -->
 <!-- Bootstrap Core and vandor -->
 <style>
+
+.metismenu .active>a {
+    color: #fff!important;
+    border-color: #2A328F!important;
+}
 
 .form-group-sm .select2-container--bootstrap .select2-selection--multiple .select2-search--inline .select2-search__field, .input-group-sm .select2-container--bootstrap .select2-selection--multiple .select2-search--inline .select2-search__field, .select2-container--bootstrap .select2-selection--multiple.input-sm .select2-search--inline .select2-search__field {
     
@@ -35,11 +46,43 @@
     
 }
 
+.bootstrap-datetimepicker-widget {
+   
+    width: 160px!important;
+    height: 180px!important;
+    margin-top: 1px!important;
+    z-index: 99999!important;
+    border-radius: 4px!important;
+    font-size: 12px!important;
+}
+
+.bootstrap-datetimepicker-widget table td {
+    height: 45px;
+    line-height: 35px;
+    width: 54px;
+}
+
+.bootstrap-datetimepicker-widget table td span {
+    display: inline-block!important;
+    width: 20px!important;
+    height: 20px!important;
+    line-height: 20px!important;
+    font-size: 13px!important;
+}
+
+.k-grid td 
+{
+  overflow: inherit!important;
+}
+
+
 .swal2-title
 {
   font-size:22px!important;
 }
-
+.metismenu a {
+    color: #fff;
+}
 /*!Don't remove this!
  * jQuery MDTimePicker v1.0 plugin
  * 
@@ -860,8 +903,9 @@ padding-left: 23px!important;
 }
 </style>
 <link rel="stylesheet" href="styles.d3a68c149fe6d5dc.css" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="styles.d3a68c149fe6d5dc.css"></noscript></head>
+<!-- <body class="font-montserrat sidebar_dark"> -->
 
-<body class="font-montserrat sidebar_dark">
+<body class="font-montserrat ">
 <!-- Page Loader -->
 <app-root></app-root>
 
@@ -870,7 +914,7 @@ padding-left: 23px!important;
 <script src="../assets/assets/bundles/lib.vendor.bundle.js" loading="lazy"></script>
 
 <script src="../assets/assets/bundles/apexcharts.bundle.js" loading="lazy"></script>
-<!-- <script src="../assets/assets/bundles/counterup.bundle.js" loading="lazy"></script> -->
+<script src="../assets/assets/bundles/counterup.bundle.js" loading="lazy"></script>
 <script src="../assets/assets/bundles/knobjs.bundle.js" loading="lazy"></script>
 <script src="../assets/assets/bundles/c3.bundle.js" loading="lazy"></script>
 
@@ -890,9 +934,9 @@ padding-left: 23px!important;
 <script src="../assets/assets/plugins/multi-select/js/jquery.multi-select.js" loading="lazy"></script>
 <script src="../assets/assets/plugins/jquery.maskedinput/jquery.maskedinput.min.js" loading="lazy"></script>
 <script src="../assets/assets/plugins/jquery-inputmask/jquery.inputmask.bundle.js" loading="lazy"></script>
-<!-- <script src="../assets/assets/plugins/dropify/js/dropify.min.js" loading="lazy"></script> -->
+<script src="../assets/assets/plugins/dropify/js/dropify.min.js" loading="lazy"></script>
 <script src="../assets/assets/plugins/parsleyjs/js/parsley.min.js"></script>
-<!-- <script src="../assets/assets/bundles/lib.vendor.bundle.js"></script> -->
+<script src="../assets/assets/bundles/lib.vendor.bundle.js"></script>
 
 <script src="../assets/assets/js/sweetalert.js"></script>
 
@@ -906,6 +950,7 @@ padding-left: 23px!important;
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>  
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 
 <script src="../assets/assets/js/core.js" loading="lazy"></script>
 
@@ -946,7 +991,7 @@ padding-left: 23px!important;
 
 
 
-<script src="../runtime.js" type="module"></script><script src="../polyfills.js" type="module"></script><script src="../styles.js" defer></script><script src="../vendor.js" type="module"></script><script src="../main.js" type="module"></script><script src="runtime.1de5c4e609b22f85.js" type="module"></script><script src="polyfills.5fd626fde791e8c3.js" type="module"></script><script src="main.e92293028dfe05c6.js" type="module"></script>
+<script src="../runtime.js" type="module"></script><script src="../polyfills.js" type="module"></script><script src="../styles.js" defer></script><script src="../vendor.js" type="module"></script><script src="../main.js" type="module"></script><script src="runtime.1de5c4e609b22f85.js" type="module"></script><script src="polyfills.5fd626fde791e8c3.js" type="module"></script><script src="main.39a38d6cd447f516.js" type="module"></script>
 
 
 

@@ -1,7 +1,7 @@
 const { Schema, model} = require("mongoose");
 
 var dotenv = require('dotenv');
-
+var moment = require('moment');
 let AttedanceSchema = new Schema({
     attedanceUniqueID:
     {
@@ -53,7 +53,22 @@ let AttedanceSchema = new Schema({
     },
     status:{
         type:Number,
+    },
+    createdAt:{
+        type: String,
+        timezone: "America/New_York",
+    },
+    updatedAt:{
+        type: String,
+        timezone: "America/New_York",
     }
-  },{ timestamps: true,versionKey: false });
+  },{ timestamps: false,versionKey: false });
+
+//   AttedanceSchema.pre("save", function(next) {
+//     var self = this;
+//     self.createAt = moment().tz("America/Los_Angeles").format();
+//     console.log("heloo",self.createAt);
+//     next();
+// });
   
 module.exports.Attedance = model("Attedance", AttedanceSchema);

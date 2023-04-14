@@ -126,9 +126,12 @@ $(document).ready(function () {
                 url:window.localStorage.getItem('BaseURLAPI')+"getProjectManager",
                 method:"GET",
                // data:x,_token:"{{ csrf_token() }}",
-                headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
+               headers: {
+                // 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                 "Authorization": "Bearer "+localStorage.getItem("APIToken")
+    
+             },
+    
             success:function(result)
             {
                
@@ -150,7 +153,7 @@ $(document).ready(function () {
                         //var FormateendedDate = [endDate.getFullYear(), endDate.getMonth() + 1, endDate.getDate()].join('-');
                     }
 
-                      items.push({ "ID": val._id,"name": val.first_name+" "+val.last_name,"first_name": val.first_name,"last_name":val.last_name, "email": val.email, "type": "Project Manager", "mobile": val.mobile_no, "oso_id": val.oso_id,'oshoExpiryDate': FormateoshoExpiryDate,"site_name":val.jobSite,"upload_data":val.osho_image});
+                      items.push({ "ID": val._id,"name": val.first_name+" "+val.last_name,"first_name": val.first_name,"last_name":val.last_name, "email": val.email, "type": "Project Manager", "mobile": val.mobile_no, "oso_id": val.oso_id,'oshoExpiryDate': FormateoshoExpiryDate,"site_name":val.jobSite,"upload_data":val.osho_image,"status": val.status});
                   })
 
 
@@ -240,8 +243,8 @@ $(document).ready(function () {
                   
                     {    
                                         
-                        template: "<button class='btn btn-primary edit_data' data-id='#:ID#' data-first_name='#:first_name#' data-last_name='#:last_name#' data-email='#:email#' data-type='#:type#' data-mobile='#:mobile#' data-osho='#:oso_id#' data-oshoExpiryDate='#:oshoExpiryDate#'  title='Edit' ><i class='fa fa-edit text-white'></i></button><button class='btn btn-warning removeData ml-2' data-val=#: ID # title='Delete' ><i class='fa fa-trash text-white'></i></button>",
-                        width: 140
+                        template: "<button class='btn btn-primary edit_data' data-id='#:ID#' data-first_name='#:first_name#' data-last_name='#:last_name#' data-email='#:email#' data-type='#:type#' data-mobile='#:mobile#' data-osho='#:oso_id#' data-oshoExpiryDate='#:oshoExpiryDate#'  title='Edit' ><i class='fa fa-edit text-white'></i></button>#if(status == '0') {# <button class='btn removeData text-white' data-val=#: ID #  title='Delete' style='background-color:rgb(221, 51, 51)!important' data-status = '1'>Deactive</button>  #}else{# <button class='btn btn-warning removeData  text-white' data-val=#: ID #  title='Delete' data-status = '0'>Active</button> #} #",
+                        width: 180
                        // field: "ID",     
                     },
                 ],
@@ -337,9 +340,21 @@ $(document).ready(function () {
 
         $("#grid").on("click", "button.removeData", function() {
             var id=$(this).attr('data-val');
-           
+            var status = $(this).attr('data-status');
+
+            if(status == 0)
+            {
+                var title= 'Do you want to Deactive this Project Manager?';
+                var New_title = 'Project Manager Deactivated Successfully...';
+                
+            }else
+            {
+                var title= 'Do you want to Active this Project Manager?';
+                var New_title = 'Project Manager Activated Successfully...';
+                
+            }
             Swal.fire({
-                title: 'Do you want to delete this project manager?',
+                title: title,
                 text: "",
                 icon: 'warning',
                 showCancelButton: true,
@@ -351,16 +366,19 @@ $(document).ready(function () {
       
          //   console.log(window.localStorage.getItem('BaseURLAPI')+"deleteProjectManager/"+id);
             $.ajax({
-                url:window.localStorage.getItem('BaseURLAPI')+"deleteProjectManager/"+id,
+                url:window.localStorage.getItem('BaseURLAPI')+"deleteProjectManager/"+id+"/"+status,
                 method:"GET",
                // data:x,_token:"{{ csrf_token() }}",
-                headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
+               headers: {
+                // 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                 "Authorization": "Bearer "+localStorage.getItem("APIToken")
+    
+             },
+    
             success:function(result)
             {
                 Swal.fire({
-                    title: 'Porject Manager Deleted Successfully...',
+                    title: New_title,
                     text: '',
                     icon: 'success',
                     confirmButtonText: 'ok',
